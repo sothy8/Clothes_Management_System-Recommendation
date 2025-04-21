@@ -1,0 +1,147 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - @ARTISAN</title>
+    <link rel="stylesheet" href="{% static 'cart/style_confirm.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const { jsPDF } = window.jspdf;
+    </script>
+</head>
+<body>
+    <div class="confirmation-container" id="confirmation-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="store-logo">
+                <h1 class="store-name">@ARTISAN</h1>
+                <p class="tagline">Handcrafted with Love</p>
+            </div>
+            <div class="date-time">
+                <p><strong>Date:</strong> {{ order.order_date|date:"Y-m-d" }}</p>
+                <p><strong>Time:</strong> {{ order.order_date|date:"H:i:s" }}</p>
+            </div>
+        </div>
+        <!-- Order Confirmation Message -->
+        <div class="confirmation-message">
+            <h2>Order Confirmation</h2>
+            <h3>Thank you for your purchase!</h3>
+            <p>Your order has been successfully placed. Here are the details:</p>
+        </div>
+        <!-- Order Items Table -->
+        <table class="confirmation-details-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th class="name-column">Name</th>
+                    <th>Quantity</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr data-item-id="{{ item.id }}">
+                    <td data-label="ID">{{ item.product.product_id }}</td>
+                    <td data-label="Image">
+                        <img src="{% static 'Shop/' %}{{ item.product.image_name }}" alt="{{ item.product.name }}" class="item-image">
+                    </td>
+                    <td data-label="Name" class="name-column">{{ item.product.name }}</td>
+                    <td data-label="Quantity">{{ item.quantity }}</td>
+                    <td data-label="Size">{{ item.size }}</td>
+                    <td data-label="Price">${{ item.product.price }}</td>
+                    <td data-label="Subtotal">${{ item.product.price|multiply:item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h4>Total: $<span id="total-amount">{{ total_amount }}</span></h4>
+        </div>
+
+        <!-- Order Information -->
+        <div class="order-info">
+            <h3>Order Details</h3>
+            <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+            <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+            <p><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+            <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+            <p><strong>Billing Address:</strong> {{ order.billing_address }}</p>
+            <p><strong>Shipping Cost:</strong> ${{ order.shipping_cost }}</p>
+            <p><strong>Estimated Delivery Date:</strong> {{ order.estimated_delivery_date }}</p>
+            <p><strong>Order Status:</strong> {{ order.status }}</p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>For any inquiries, please contact us at 
+                <a href="mailto:artisankh@shop.com">artisankh@shop.com</a>.
+            </p>
+            <p class="thank-you">Thank you for shopping with us!</p>
+        </footer>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="button-container">
+        <a href="{% url 'home' %}" class="button">Continue Shopping</a>
+        <button class="button" id="download-receipt-btn">Download Receipt</button>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" style="display: none;">
+        <p>Generating PDF... Please wait.</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("confirm.js is running...");
+
+            // Add event listener for the download button
+            document.getElementById("download-receipt-btn").addEventListener("click", function () {
+                console.log("Download button clicked!");
+
+                // Show loading indicator
+                document.getElementById("loading-indicator").style.display = "block";
+
+                const element = document.getElementById("confirmation-container");
+                if (!element) {
+                    console.error("Error: confirmation-container not found!");
+                    document.getElementById("loading-indicator").style.display = "none";
+                    return;
+                }
+
+                // Generate PDF
+                html2canvas(element, { scale: 2 }).then((canvas) => {
+                    console.log("Canvas generated.");
+                    const imgData = canvas.toDataURL("image/png");
+                    const pdf = new jsPDF("p", "mm", "a4");
+
+                    const imgWidth = 210; // A4 width in mm
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                    pdf.addImage(imgData, "PNG", 0, 10, imgWidth, imgHeight);
+                    pdf.save("order_receipt.pdf");
+                    console.log("PDF saved successfully.");
+
+                    // Hide loading indicator
+                    document.getElementById("loading-indicator").style.display = "none";
+                }).catch((error) => {
+                    console.error("Error generating PDF:", error);
+                    document.getElementById("loading-indicator").style.display = "none";
+                    alert("An error occurred while generating the PDF. Please try again.");
+                });
+            });
+        });
+    </script>
+</body>
+</html>

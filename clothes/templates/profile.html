@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="{% static 'profile/profile.css' %}">
+</head>
+<body>
+    <a href="{% url 'home' %}" class="button back-home">◀︎</a>
+    {% if user.is_authenticated %}
+        <!-- Display Profile Information for Authenticated Users -->
+        <h1>Profile Page</h1>
+        <div class="profile-container">
+            <div class="profile-info">
+                <h2>Welcome, {{ user.first_name }} {{ user.last_name }}!</h2>
+                <div class="info-box"><p><strong>Username:</strong> {{ user.username }}</p></div>
+                <div class="info-box"><p><strong>Email:</strong> {{ user.email }}</p></div>
+                <div class="info-box"><p><strong>Date of Birth:</strong> {{ user.userprofile.date_of_birth }}</p></div>
+                <div class="info-box"><p><strong>Height:</strong> {{ user.userprofile.height }} cm</p></div>
+                <div class="info-box"><p><strong>Weight:</strong> {{ user.userprofile.weight }} kg</p></div>
+                <div class="info-box"><p><strong>Body Shape:</strong> {{ user.userprofile.body_shape }}</p></div>
+                <div class="info-box"><p><strong>Style Preferences:</strong> {{ user.userprofile.style_preferences }}</p></div>
+            </div>
+            <!-- Update Profile Form -->
+            <div class="profile-form">
+                <h3>Update Profile</h3>
+                <form method="post" action="{% url 'profile' %}">
+                    {% csrf_token %}
+                    {{ user_form.as_p }}
+                    {{ profile_form.as_p }}
+                    <button type="submit" class="button">Update Profile</button>
+                </form>
+                <h2>Change Password</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ password_form.as_p }}
+                    <button type="submit" name="change_password" class="button">Change Password</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <!-- Redirect Unauthenticated Users to Sign In -->
+        <div class="auth-prompt">
+            <h2>You need to sign in to view your profile.</h2>
+            <p><a href="{% url 'signin' %}" class="button">Sign In</a></p>
+            <p>Don't have an account? <a href="{% url 'signup' %}">Register here</a>.</p>
+        </div>
+    {% endif %}
+    <script src="{% static 'profile/profile.js' %}"></script> 
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Form</title>
+    <link rel="stylesheet" href="{% static 'profile/signup.css' %}">
+</head>
+<body>
+    <a href="{% url 'home' %}" class="button back-home">◀︎</a>
+    <h1>Registration Form</h1>
+    <form method="POST" action="{% url 'signup' %}">
+        {% csrf_token %}
+        <div class="headingsContainer">
+            <h3>Sign Up</h3>
+            <p>Create your account by filling out the form below.</p>
+        </div>
+
+        <!-- Display error messages -->
+        {% if form.errors %}
+            <div class="error-message">
+                <p>Please correct the errors below.</p>
+            </div>
+        {% endif %}
+
+        <div class="mainContainer">
+            <!-- Username -->
+            <label for="username">Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="error-message">{{ form.username.errors }}</div>
+            {% endif %}
+
+            <!-- First Name -->
+            <label for="first_name">First Name</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+                <div class="error-message">{{ form.first_name.errors }}</div>
+            {% endif %}
+
+            <!-- Last Name -->
+            <label for="last_name">Last Name</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+                <div class="error-message">{{ form.last_name.errors }}</div>
+            {% endif %}
+
+            <!-- Email -->
+            <label for="email">Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="error-message">{{ form.email.errors }}</div>
+            {% endif %}
+
+            <!-- Password -->
+            <label for="password1">Password</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+                <div class="error-message">{{ form.password1.errors }}</div>
+            {% endif %}
+
+            <!-- Confirm Password -->
+            <label for="password2">Confirm Password</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+                <div class="error-message">{{ form.password2.errors }}</div>
+            {% endif %}
+
+            {% comment %} <!-- Date of Birth -->
+            <label for="date_of_birth">Date of Birth</label>
+            {{ form.date_of_birth }}
+            {% if form.date_of_birth.errors %}
+                <div class="error-message">{{ form.date_of_birth.errors }}</div>
+            {% endif %}
+
+            <!-- Height -->
+            <label for="height">Height (cm)</label>
+            {{ form.height }}
+            {% if form.height.errors %}
+                <div class="error-message">{{ form.height.errors }}</div>
+            {% endif %}
+
+            <!-- Weight -->
+            <label for="weight">Weight (kg)</label>
+            {{ form.weight }}
+            {% if form.weight.errors %}
+                <div class="error-message">{{ form.weight.errors }}</div>
+            {% endif %}
+
+            <!-- Body Shape -->
+            <label for="body_shape">Body Shape</label>
+            {{ form.body_shape }}
+            {% if form.body_shape.errors %}
+                <div class="error-message">{{ form.body_shape.errors }}</div>
+            {% endif %}
+
+            <!-- Style Preferences -->
+            <label for="style_preferences">Style Preferences</label>
+            {{ form.style_preferences }}
+            {% if form.style_preferences.errors %}
+                <div class="error-message">{{ form.style_preferences.errors }}</div>
+            {% endif %} {% endcomment %}
+
+            <!-- Submit button -->
+            <button type="submit">Register</button>
+
+            <!-- Sign in link -->
+            <p class="login">Already have an account? <a href="{% url 'signin' %}">Sign In here!</a></p>
+        </div>
+    </form>
+    <script>
+        function validateForm() {
+            const username = document.getElementById('id_username').value;
+            const password = document.getElementById('id_password').value;
+            if (username === '' || password === '') {
+                alert('Username and password are required.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

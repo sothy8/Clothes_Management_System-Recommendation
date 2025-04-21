@@ -1,0 +1,99 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="{% static 'cart/style_checkout.css' %}">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+    <div class="checkout-container">
+        <h1>Checkout</h1>
+        <h2>Order Summary</h2>
+        <table class="checkout-details-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th class="name-column">Name</th>
+                    <th>Quantity</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr data-item-id="{{ item.id }}">
+                    <td data-label="ID">{{ item.product.product_id }}</td>
+                    <td data-label="Image">
+                        <img src="{% static 'Shop/' %}{{ item.product.image_name }}" alt="{{ item.product.name }}" class="item-image">
+                    </td>
+                    <td data-label="Name" class="name-column">{{ item.product.name }}</td>
+                    <td data-label="Quantity">{{ item.quantity }}</td>
+                    <td data-label="Size">{{ item.size }}</td>
+                    <td data-label="Price">${{ item.product.price }}</td>
+                    <td data-label="Subtotal">${{ item.product.price|multiply:item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Total: $<span id="total-amount">{{ total_amount }}</span></h3>
+
+        <!-- Payment Methods Section -->
+        <form id="payment-form" method="post" action="{% url 'confirm_order' %}">
+            {% csrf_token %}
+            <div class="payment-option">
+                <input type="radio" id="cash" name="payment-method" value="cash" checked>
+                <label for="cash">Cash</label>
+            </div>
+            <div class="payment-option">
+                <input type="radio" id="qr-code" name="payment-method" value="qr-code">
+                <label for="qr-code">QR Code</label>
+            </div>
+            <div class="payment-option">
+                <input type="radio" id="card" name="payment-method" value="card">
+                <label for="card">Credit/Debit Card</label>
+            </div>
+
+            <!-- Payment Details Section -->
+            <div id="cash-details" class="payment-details">
+                <h4>Cash Payment</h4>
+                <p>Please prepare the exact amount for the delivery person.</p>
+            </div>
+            <div id="qr-code-details" class="payment-details">
+                <h4>QR Code Payment</h4>
+                <p>Scan the QR code below to complete your payment.</p>
+                <div class="QR">
+                    <h5>ABA Bank</h5>
+                    <img src="{% static 'cart/ABA.png' %}" alt="QR Code">
+                </div>
+                <div class="QR">
+                    <h5>ACELEDA Bank</h5>
+                    <img src="{% static 'cart/ACELEDA.png' %}" alt="QR Code">
+                </div>
+            </div>
+            <div id="card-details" class="payment-details">
+                <h4>Credit/Debit Card Payment</h4>
+                <div id="card-element">
+                    <!-- Stripe Card Element will be inserted here -->
+                </div>
+                <div id="card-errors" role="alert"></div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-container">
+                <a href="{% url 'cart' %}" class="button">Back to Cart</a>
+                <button type="submit" class="button">Confirm Order</button>
+                {% comment %} <a href="{% url 'confirm_order' %}" type="submit" class="button">Confirm Order</a> {% endcomment %}
+            </div>
+        </form>
+    </div>
+    <script src="{% static 'cart/checkout.js' %}"></script> 
+</body>
+</html>

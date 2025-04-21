@@ -1,0 +1,348 @@
+
+body {
+    font-family: 'Courier New', Courier, monospace; 
+    background-color: #fff;
+    color: #000;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.4;
+}
+
+.confirmation-container {
+    font-size: 14px;
+    max-width: 500px; 
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.store-logo {
+    text-align: left;
+}
+
+.store-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+}
+
+.date-time {
+    text-align: right;
+}
+
+.date-time p {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+h2 {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    border-bottom: 2px dashed #333;
+    padding-bottom: 10px;
+}
+
+h3 {
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+p {
+    font-size: 0.9em;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Table Styles */
+.confirmation-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.confirmation-details-table th,
+.confirmation-details-table td {
+    font-size: 0.9em;
+    padding: 5px;
+    text-align: left;
+    border-bottom: 1px dashed #ddd;
+}
+
+.confirmation-details-table th {
+    text-align: center; 
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.confirmation-details-table td {
+    color: #666;
+    text-align: center;
+}
+
+
+.confirmation-details-table td[data-label="Image"] img {
+    max-width: 40px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.confirmation-details-table td[data-label="Name"] {
+    font-size: 12px;
+}
+
+/* Total Amount */
+h4 {
+    font-size: 1.2em;
+    text-align: right;
+    margin-top: 20px;
+    border-top: 2px dashed #000;
+    padding-top: 10px;
+}
+
+/* Order Info Section */
+.order-info {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.order-info p {
+    text-align: left;
+    margin: 8px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.order-info strong {
+    color: #333;
+}
+
+.payment-details {
+    display: none;
+}
+.payment-option {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.payment-option:hover {
+    background-color: #f9f9f9;
+}
+.StripeElement {
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+}
+.StripeElement--invalid {
+    border-color: #fa755a;
+}
+#card-errors {
+    color: #fa755a;
+    margin-top: 10px;
+}
+
+/* Button Styles */
+.button-container {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-left: 10px;
+    font-size: 0.95em;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: #9999;
+    transform: translateY(-2px);
+}
+footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555;
+}
+footer .thank-you {
+    font-weight: bold;
+    color: #333;
+}
+#loading-indicator {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 1536px) {
+    .confirmation-container {
+        max-width: 500px;
+    }
+    h2 {
+        font-size: 1.2em;
+    }
+
+    h3 {
+        font-size: 1em;
+    }
+
+    .confirmation-details-table th,
+    .confirmation-details-table td {
+        padding: 5px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 1280px) {
+    .confirmation-container {
+        max-width: 500px;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    h3 {
+        font-size: 1em;
+    }
+
+    .confirmation-details-table th,
+    .confirmation-details-table td {
+        padding: 5px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 1024px) {
+    .confirmation-container {
+        max-width: 500px;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    h3 {
+        font-size: 1em;
+    }
+    .confirmation-details-table th,
+    .confirmation-details-table td {
+        padding: 5px;
+        font-size: 0.9em;
+    }
+
+    .confirmation-details-table td[data-label="Image"] img {
+        max-width: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .confirmation-container {
+        max-width: 500px;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    h3 {
+        font-size: 0.95em;
+    }
+
+    .confirmation-details-table th,
+    .confirmation-details-table td {
+        padding: 5px;
+        font-size: 0.85em;
+    }
+
+    .confirmation-details-table td[data-label="Image"] img {
+        max-width: 35px;
+    }
+
+    .button-container {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    .confirmation-container {
+        max-width: 500px;
+        
+    }
+    h2 {
+        font-size: 1.1em;
+    }
+
+    h3 {
+        font-size: 0.9em;
+    }
+
+    .confirmation-details-table th,
+    .confirmation-details-table td {
+        padding: 4px;
+        font-size: 0.8em;
+    }
+
+    .confirmation-details-table td[data-label="Image"] img {
+        max-width: 30px;
+    }
+    .button-container {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 475px) {
+    .confirmation-container {
+        max-width: 500px;
+    }
+    h2 {
+        font-size: 1em;
+    }
+
+    h3 {
+        font-size: 0.85em;
+    }
+
+    .confirmation-details-table th,
+    .confirmation-details-table td {
+        padding: 3px;
+        font-size: 0.75em;
+    }
+
+    .confirmation-details-table td[data-label="Image"] img {
+        max-width: 30px;
+    }
+    .button-container {
+        gap: 10px;
+    }
+}
+

@@ -1,0 +1,156 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2.5rem;
+    color: #333;
+}
+
+/* Product List Styles */
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    list-style: none;
+    justify-items: center;
+    padding: 20px;
+}
+
+.product-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.product-details {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.product-details .name {
+    font-size: 1.5rem;
+    margin: 10px 0;
+    color: #333;
+}
+
+.product-details .description {
+    font-size: 1rem;
+    margin: 10px 0;
+    color: #666;
+}
+
+.product-details .price {
+    font-size: 1.1rem;
+    margin: 10px 0;
+    color: #333;
+}
+
+.button {
+    display: inline-block;
+    background-color: #999;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+}
+
+.button:hover {
+    background-color: #d8d8d8;
+    transform: translateY(-2px);
+}
+
+.button.back-home {
+    border-radius: 100px;
+    background-color: #999;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+    .product-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .product-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .product-details .name {
+        font-size: 1.2rem;
+    }
+
+    .product-details .description {
+        font-size: 0.9rem;
+    }
+
+    .product-details .price {
+        font-size: 1rem;
+    }
+
+    .button {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .product-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .product-item {
+        padding: 15px;
+    }
+
+    .product-details .name {
+        font-size: 1rem;
+    }
+
+    .product-details .description {
+        font-size: 0.8rem;
+    }
+
+    .product-details .price {
+        font-size: 0.9rem;
+    }
+
+    .button {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+}

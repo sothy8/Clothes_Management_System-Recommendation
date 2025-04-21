@@ -1,0 +1,98 @@
+<!-- filepath: /Users/vandethsothy/Desktop/CSR/clothes/templates/cart.html -->
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="{% static 'cart/style_cart.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Your Cart</h1>
+        <h2>Cart Details</h2>
+        <table class="cart-details-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th class="name-column">Name</th>
+                    <th>Quantity</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th class="date-column">Date</th>
+                    <th>Time</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr data-item-id="{{ item.id }}">
+                    <td data-label="ID">{{ item.product.product_id }}</td>
+                    <td data-label="Image">
+                        <img src="{% static 'Shop/' %}{{ item.product.image_name }}" alt="{{ item.product.name }}" class="item-image">
+                    </td>
+                    <td data-label="Name" class="name-column">{{ item.product.name }}</td>
+                    <td data-label="Quantity">
+                        <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="0" class="quantity-input">
+                    </td>
+                    <td data-label="Size">
+                        <select name="size_{{ item.id }}" class="size-select">
+                            <option value="XS" {% if item.size == "XS" %}selected{% endif %}>XS</option>
+                            <option value="S" {% if item.size == "S" %}selected{% endif %}>S</option>
+                            <option value="M" {% if item.size == "M" %}selected{% endif %}>M</option>
+                            <option value="L" {% if item.size == "L" %}selected{% endif %}>L</option>
+                            <option value="XL" {% if item.size == "XL" %}selected{% endif %}>XL</option>
+                        </select>
+                    </td>
+                    <td data-label="Price">${{ item.product.price }}</td>
+                    <td data-label="Date" class="date-column">{{ item.date_added|date:"Y-m-d" }}</td>
+                    <td data-label="Time">{{ item.date_added|date:"H:i:s" }}</td>
+                    <td data-label="Subtotal" class="subtotal">${{ item.product.price|multiply:item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Total: $<span id="total-amount">{{ total_amount }}</span></h3>
+        <div class="button-container">
+            <a href="{% url 'home' %}" class="button">Return to Home</a>
+            <a href="{% url 'checkout' %}" class="button">Proceed to Checkout</a>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            function updateCart(itemId, quantity, size) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "update_cart" %}',
+                    data: {
+                        'item_id': itemId,
+                        'quantity': quantity,
+                        'size': size,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (quantity == 0) {
+                                $('tr[data-item-id="' + itemId + '"]').remove();
+                            } else {
+                                $('tr[data-item-id="' + itemId + '"] .subtotal').text('$' + response.subtotal);
+                            }
+                            $('#total-amount').text(response.total_amount);
+                        }
+                    }
+                });
+            }
+            $('.quantity-input, .size-select').on('change', function() {
+                var itemId = $(this).closest('tr').data('item-id');
+                var quantity = $(this).closest('tr').find('.quantity-input').val();
+                var size = $(this).closest('tr').find('.size-select').val();
+                updateCart(itemId, quantity, size);
+            });
+        });
+    </script>
+</body>
+</html>

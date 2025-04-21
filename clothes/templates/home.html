@@ -1,0 +1,363 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTISAN Clothing Store</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+</head>
+<body>
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar section-content">
+            <a href="#" class="nav-logo">
+                <h2 class="logo-text">ARTISAN</h2>
+            </a>
+            <!-- Left Side: Menu Bar -->
+            <div id="overlay" class="overlay"></div>
+            <button id="menu-toggle-button" class="fas fa-bars"></button>
+            <ul id="nav-menu" class="nav-menu">
+                <li class="nav-item">
+                    <a href="{% url 'men' %}" class="nav-link">MEN</a>
+                    <div class="submenu">
+                        <a href="{% url 'men_shirts' %}">SHIRTS</a>
+                        <a href="{% url 'men_t_shirts' %}">T-SHIRTS</a>
+                        <a href="{% url 'men_polo_shirts' %}">POLO SHIRTS</a>
+                        <a href="{% url 'men_blazers' %}">BLAZERS</a>
+                        <a href="{% url 'men_jackets' %}">JACKETS</a>
+                        <a href="{% url 'men_hoodies_sweatshirts' %}">HOODIES | SWEATSHIRTS</a>
+                        <a href="{% url 'men_sweaters_cardigans' %}">SWEATERS | CARDIGANS</a>
+                        <a href="{% url 'men_jeans' %}">JEANS</a>
+                        <a href="{% url 'men_trousers' %}">TROUSERS</a>
+                        <a href="{% url 'men_shorts' %}">SHORTS</a>
+                        <a href="{% url 'men_shoes' %}">SHOES</a>
+                        <a href="{% url 'men_bags' %}">BAGS</a>
+                        <a href="{% url 'men_accessories' %}">ACCESSORIES</a>
+                        <a href="{% url 'men_perfume' %}">PERFUMES</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'women' %}" class="nav-link">WOMEN</a>
+                    <div class="submenu">
+                        <a href="{% url 'women_shirts' %}">SHIRTS</a>
+                        <a href="{% url 'women_t_shirts' %}">T-SHIRTS</a>
+                        <a href="{% url 'women_tops' %}">TOPS</a>
+                        <a href="{% url 'women_dresses' %}">DRESSES</a>
+                        <a href="{% url 'women_polo_shirts' %}">POLO SHIRTS</a>
+                        <a href="{% url 'women_blazers' %}">BLAZERS</a>
+                        <a href="{% url 'women_jackets' %}">JACKETS</a>
+                        <a href="{% url 'women_hoodies_sweatshirts' %}">HOODIES | SWEATSHIRTS</a>
+                        <a href="{% url 'women_sweaters_cardigans' %}">SWEATERS | CARDIGANS</a>
+                        <a href="{% url 'women_shorts' %}">SHORTS</a>
+                        <a href="{% url 'women_jeans' %}">JEANS</a>
+                        <a href="{% url 'women_trousers' %}">TROUSERS</a>
+                        <a href="{% url 'women_shoes' %}">SHOES</a>
+                        <a href="{% url 'women_bags' %}">BAGS</a>
+                        <a href="{% url 'women_accessories' %}">ACCESSORIES</a>
+                        <a href="{% url 'women_perfume' %}">PERFUMES</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#shop" class="nav-link">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#testimonials" class="nav-link">Testimonials</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <!-- Right Side: Search Bar, Profile, and Cart -->
+            <div class="right-bar">
+                <div class="search-bar">
+                    <form action="{% url 'search' %}" method="GET">
+                        <input type="text" name="query" placeholder="Search..." class="search-input">
+                        <button type="submit" class="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="profile-bar">
+                    <div class="profile-dropdown">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'profile' %}" class="profile-link">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                        {% else %}
+                            <a href="{% url 'signin' %}" class="profile-link">
+                                <i class="fas fa-sign-in-alt"></i> Log In
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="cart-bar">
+                    <a href="{% url 'cart' %}" class="cart-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-counter">{{ request.user.cart_set.count }}</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+
+        <!-- Hero Section -->
+        <section class="hero-section" id="home">
+            <div class="section-content">
+                <div class="hero-details">
+                    <h3 class="subtitle">Dress not just to impress, 
+                        but to express the unique style that defines you.</h3>
+                    <div class="buttons">
+                        <a href="{% url 'product_list' 'all' %}" class="button order-now">Shop Now</a>
+                        <a href="#contact" class="button contact-us">Contact Us</a>
+                    </div>
+                </div>
+                <div class="hero-image-wrapper">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image1.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image2.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image3.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image4.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image5.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image6.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image7.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image8.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image9.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image10.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image11.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'hero-image12.jpg' %}" class="d-block w-100 rounded" style="height: 550px; object-fit: cover;">
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <h2 class="section-title">About Us</h2>
+            <div class="section-content">
+                <div class="about-image-wrapper">
+                    <img src="{% static 'about-image.jpg' %}" alt="About" class="about-image">
+                </div>
+                <div class="about-details">
+                    <p class="text">
+                        Welcome to our Clothing Store, where fashion meets individuality. We believe 
+                        that clothing is more than just fabric—it's a way to express who you are. Whether 
+                        you're searching for the perfect outfit, exploring new trends, or seeking something 
+                        timeless, we're here to help you look and feel your best. With a diverse range of 
+                        styles, sizes, and preferences, we're confident you'll find exactly what you're 
+                        looking for. Enjoy shopping with us and let your personal style shine!
+                    </p>
+                    <p class="text">
+                        At ARTISAN, we pride ourselves on being a go-to destination for fashion lovers. 
+                        We're dedicated to providing an exceptional shopping experience in a cozy and 
+                        inviting atmosphere, where guests can relax, unwind, and enjoy their time in comfort.
+                    </p>
+                    <div class="social-link-list">
+                        <a href="https://www.facebook.com" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shop Section -->
+        <section class="shop-section" id="shop">
+            <h2 class="section-title">Our Collection</h2>
+            <div class="section-content">
+                <ul class="product-list">
+                    {% for product in products %}
+                        <li class="product-item">
+                            <a href="{% url 'product_detail' product.id %}">
+                                <img src="{% static 'Shop/' %}{{ product.image_name }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+                            </a>
+                            <div class="product-details">
+                                <h3 class="name">{{ product.name }}</h3>
+                                <p class="price">${{ product.price }}</p><br>
+                                <div class="button-container">
+                                    <a href="{% url 'product_detail' product.id %}" class="button view-details">Details</a>
+                                    <button class="button add-to-cart" data-product-id="{{ product.id }}" data-size="M" data-quantity="1">Add</button>
+                                </div>
+                                <ul id="product-options" class="product-options">
+                                    <li class="option">
+                                        <label for="size-{{ product.id }}">Size:</label>
+                                        <select name="size" id="size-{{ product.id }}">
+                                            <option value="XS">XS</option>
+                                            <option value="S">S</option>
+                                            <option value="M">M</option>
+                                            <option value="L">L</option>
+                                            <option value="XL">XL</option>
+                                        </select>
+                                    </li>
+                                    <li class="option">
+                                        <label for="quantity-{{ product.id }}">Quantity:</label>
+                                        <input type="number" name="quantity" id="quantity-{{ product.id }}" min="1" value="1">
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="view-all">
+                <a href="{% url 'shop' %}" class="btn-primary">View All Products</a> 
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section" id="testimonials">
+            <h2 class="section-title">Testimonials</h2>
+            <div class="section-content">
+                <div class="slider-container swiper">
+                    <div class="slider-wrapper">
+                        <ul class="testimonials-list swiper-wrapper">
+                            {% for testimonial in testimonials %}
+                                <li class="testimonial swiper-slide">
+                                    <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" class="user-image">
+                                    <h3 class="name">{{ testimonial.name }}</h3>
+                                    <i class="feedback">{{ testimonial.feedback }}</i>
+                                </li>
+                            {% endfor %}
+                        </ul><br>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-slide-button swiper-button-prev"></div>
+                        <div class="swiper-slide-button swiper-button-next"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section class="contact-section" id="contact">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="section-content">
+                <ul class="contact-info-list">
+                    <li class="contact-info">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <a href= "https://www.google.com/maps/" target="_blank">
+                            <p>123 Campsite Avenue, Wilderness, CA 98765</p>
+                        </a>
+                    </li>
+                    <li class="contact-info">
+                        <i class="fa-solid fa-envelope"></i>
+                        <p>artisankh@shop.com</p>
+                    </li>
+                    <li class="contact-info">
+                        <i class="fa-solid fa-phone"></i>
+                        <p>(123) xxxxxxxxxx</p>
+                    </li>
+                    <li class="contact-info">
+                        <i class="fa-solid fa-location-clocks">⏱️</i>
+                        <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
+                    </li>
+                    <li class="contact-info">
+                        <i class="fa-solid fa-location-clocks">⏱️</i>
+                        <p>Saturday: 10:00 AM - 3:00 PM</p>
+                    </li>
+                    <li class="contact-info">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <p>Sunday: Closed</p>
+                    </li>
+                    <li class="contact-info">
+                        <i class="fa-solid fa-global">🌍</i>
+                        <a href="https://www.loplop/crazy99.com" class="website-link">
+                            <p>www.loplop/crazy99.com</p>
+                        </a>
+                    </li>
+                </ul>
+                <form action="{% url 'contact' %}" method="POST" class="contact-form">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Your name" class="form-input" required>
+                    <input type="email" name="email" placeholder="Your email" class="form-input" required>
+                    <textarea name="message" placeholder="Your message" class="form-input" required></textarea>
+                    <button type="submit" class="submit-button">Submit</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer-section">
+        <div class="section-content">
+            <p class="copyright-text">© 2025 ARTISAN. All rights reserved.</p>
+            <div class="social-link-list">
+                <a href="https://www.facebook.com" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.instagram.com" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.tiktok.com" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+            <p>
+                <a href="{% url 'submit_testimonial' %}" class="policy-link">Submit Testimonial</a>
+            </p>
+        </div>
+        <p class="policy-text">
+            <a href="#" class="policy-link">Privacy policy</a>
+            <span class="separator">*</span>
+            <a href="#" class="policy-link">Refund policy</a>
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{% static 'script.js' %}"></script> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.add-to-cart').on('click', function(e) {
+                e.preventDefault();
+                var product_id = $(this).data('product-id');
+                var size = $('#size-' + product_id).val();
+                var quantity = $('#quantity-' + product_id).val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/add-to-cart/' + product_id + '/',
+                    data: {
+                        'product_id': product_id,
+                        'size': size,
+                        'quantity': quantity,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        $('#cart-counter').text(response.cart_count);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

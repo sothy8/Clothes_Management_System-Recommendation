@@ -1,0 +1,445 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - ARTISAN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'View_Detail/view_detail.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Basic styling for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .size-tabs {
+            margin: 15px 0;
+        }
+        
+        .size-tab {
+            padding: 5px 10px;
+            background: #f1f1f1;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .size-tab.active {
+            background: #333;
+            color: white;
+        }
+        
+        .size-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .size-table th, .size-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .size-table th {
+            background-color: #f2f2f2;
+        }
+        
+        /* Hide centimeter table by default */
+        .size-table.cm {
+            display: none;
+        }
+        
+        /* Style for selected size */
+        .size-option.selected {
+            background-color: #333;
+            color: white;
+        }
+        
+        /* Style for disabled sizes */
+        .size-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Toast notification styles */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Shop
+        </a>
+
+        <div class="product-detail">
+            <div class="product-gallery">
+                <div class="main-image">
+                    <img src="{% static 'Shop/' %}{{ product.image_name }}" alt="{{ product.name }}" id="mainProductImage">
+                </div>
+                <div class="thumbnails">
+                    {% for image in product.images.all %}
+                    <img src="{% static 'Shop/' %}{{ image.image_name }}" alt="{{ product.name }}"
+                         class="thumbnail {% if forloop.first %}active{% endif %}" 
+                         onclick="changeMainImage(this)">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="product-info">
+                <h1>{{ product.name }}</h1>
+                <div class="price-section">
+                    {% if product.discount_price %}
+                    <span class="current-price">${{ product.discount_price }}</span>
+                    <span class="original-price">${{ product.price }}</span>
+                    <span class="discount-badge">Save {{ product.get_discount_percentage }}%</span>
+                    {% else %}
+                    <span class="current-price">${{ product.price }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="size-selection">
+                    <h3>Size <span class="size-guide-link" id="openSizeGuide">(Size Guide)</span></h3>
+                    <div class="size-select">
+                        <label for="size-{{ product.id }}">Size:</label>
+                        <select name="size" id="size-{{ product.id }}" required>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% comment %} <div class="size-selection">
+                    <h3>Size <span class="size-guide-link" id="openSizeGuide">(Size Guide)</span></h3>
+                    <div class="size-select">
+                        <select id="size-{{ product.id }}" name="size" required>
+                            <option value="">Select Size</option>
+                            {% for size_code, size_name in product.SIZE_CHOICES %}
+                            <option value="{{ size_code }}">{{ size_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div> {% endcomment %}
+
+                {% comment %} <div class="size-selection">
+                    <h3>Size <span class="size-guide-link" id="openSizeGuide">(Size Guide)</span></h3>
+                    <div class="size-select">
+                        <select id="size-{{ product.id }}" name="size" required>
+                            <option value="">Select Size</option>
+                            {% for size_code, size_name in product.available_sizes %}
+                            <option value="{{ size_code }}" {% if not size_in_stock %}disabled{% endif %}>
+                                {{ size_name }}{% if not size_in_stock %} (Out of Stock){% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div> {% endcomment %}
+
+                <div class="quantity-selector">
+                    <label>Quantity:</label>
+                    <div class="quantity-controls">
+                        <button type="button" class="quantity-btn minus"><i class="fas fa-minus"></i></button>
+                        <input type="number" id="quantity" value="1" min="1" max="10">
+                        <button type="button" class="quantity-btn plus"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <div class="product-actions">
+                    <button class="add-to-cart" data-product-id="{{ product.id }}">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <button class="wishlist-btn">
+                        <i class="far fa-heart"></i> Wishlist
+                    </button>
+                </div>
+
+                <div class="product-description">
+                    <h3>Description</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+
+                {% comment %} <div class="product-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Stock Keeping Unit:</span>
+                        <span class="meta-value">{{ product.sku }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Category:</span>
+                        <span class="meta-value">{{ product.category.name }}</span>
+                    </div>
+                </div> {% endcomment %}
+
+                <div class="product-meta">
+                    <p><strong>SKU:</strong> {{ product.sku }}</p>
+                    <p><strong>Category:</strong> {{ product.category }}</p>
+                    <p><strong>Subcategory:</strong> {{ product.subcategory }}</p>
+                    <p><strong>Stock:</strong> {{ product.stock }} items available</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="related-products">
+            <h2>You May Also Like</h2>
+            <div class="related-grid">
+                {% for related in related_products %}
+                <div class="related-product">
+                    <a href="{% url 'product_detail' related.id %}">
+                        <img src="{% static 'Shop/' %}{{ related.image_name }}" alt="{{ related.name }}" loading="lazy">
+                        <h3>{{ related.name }}</h3>
+                        <div class="price">${{ related.price }}</div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Size Guide Modal -->
+    <div id="sizeGuideModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Size Guide</h2>
+            <div class="size-tabs">
+                <button class="size-tab active" data-unit="inches">Inches</button>
+                <button class="size-tab" data-unit="cm">Centimeters</button>
+            </div>
+            <table class="size-table inches">
+                <thead>
+                    <tr>
+                        <th>Size</th>
+                        <th>Chest</th>
+                        <th>Waist</th>
+                        <th>Hip</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>XS</td>
+                        <td>32-34</td>
+                        <td>25-27</td>
+                        <td>34-36</td>
+                    </tr>
+                    <tr>
+                        <td>S</td>
+                        <td>35-37</td>
+                        <td>28-30</td>
+                        <td>37-39</td>
+                    </tr>
+                    <tr>
+                        <td>M</td>
+                        <td>38-40</td>
+                        <td>31-33</td>
+                        <td>40-42</td>
+                    </tr>
+                    <tr>
+                        <td>L</td>
+                        <td>41-43</td>
+                        <td>34-36</td>
+                        <td>43-45</td>
+                    </tr>
+                    <tr>
+                        <td>XL</td>
+                        <td>44-46</td>
+                        <td>37-39</td>
+                        <td>46-48</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="size-table cm">
+                <thead>
+                    <tr>
+                        <th>Size</th>
+                        <th>Chest</th>
+                        <th>Waist</th>
+                        <th>Hip</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>XS</td>
+                        <td>81-86</td>
+                        <td>64-69</td>
+                        <td>86-91</td>
+                    </tr>
+                    <tr>
+                        <td>S</td>
+                        <td>89-94</td>
+                        <td>71-76</td>
+                        <td>94-99</td>
+                    </tr>
+                    <tr>
+                        <td>M</td>
+                        <td>97-102</td>
+                        <td>79-84</td>
+                        <td>102-107</td>
+                    </tr>
+                    <tr>
+                        <td>L</td>
+                        <td>104-109</td>
+                        <td>86-91</td>
+                        <td>109-114</td>
+                    </tr>
+                    <tr>
+                        <td>XL</td>
+                        <td>112-117</td>
+                        <td>94-99</td>
+                        <td>117-122</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastNotification"></div>
+
+    <script>
+        // Image gallery functionality
+        function changeMainImage(thumb) {
+            $('.thumbnail').removeClass('active');
+            $(thumb).addClass('active');
+            $('#mainProductImage').attr('src', $(thumb).attr('src'));
+        }
+
+        // Quantity controls
+        $('.quantity-btn').on('click', function() {
+            const input = $(this).siblings('input[type="number"]');
+            let value = parseInt(input.val());
+            
+            if ($(this).hasClass('minus') && value > 1) {
+                input.val(value - 1);
+            } else if ($(this).hasClass('plus') && value < parseInt(input.attr('max'))) {
+                input.val(value + 1);
+            }
+        });
+
+        // Size guide modal
+        $('#openSizeGuide').on('click', function(e) {
+            e.preventDefault();
+            $('#sizeGuideModal').show();
+        });
+        
+        $('.close-modal').on('click', function() {
+            $('#sizeGuideModal').hide();
+        });
+        
+        $(window).on('click', function(e) {
+            if (e.target === $('#sizeGuideModal')[0]) {
+                $('#sizeGuideModal').hide();
+            }
+        });
+
+        // Size tab switching
+        $('.size-tab').on('click', function() {
+            $('.size-tab').removeClass('active');
+            $(this).addClass('active');
+            
+            const unit = $(this).data('unit');
+            $('.size-table').hide();
+            $(`.size-table.${unit}`).show();
+        });
+
+        // Add to cart functionality
+        $('.add-to-cart').on('click', function(e) {
+            e.preventDefault();
+            const product_id = $(this).data('product-id');
+            const size = $('#size-' + product_id).val();
+            const quantity = $('#quantity-' + product_id).val();
+            const toast = $('#toastNotification');
+
+            if (!size) {
+                showToast('Please select a size', 'error');
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/add-to-cart/' + product_id + '/',
+                data: {
+                    'product_id': product_id,
+                    'size': size,
+                    'quantity': quantity,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#cart-counter').text(response.cart_count);
+                        showToast('Item added to cart successfully!', 'success');
+                    } else {
+                        showToast(response.message || 'Failed to add to cart', 'error');
+                    }
+                },
+                error: function() {
+                    showToast('An error occurred while adding to cart', 'error');
+                }
+            });
+        });
+
+        // Wishlist functionality
+        $('.wishlist-btn').on('click', function() {
+            const isWishlisted = $(this).hasClass('wishlisted');
+            
+            if (isWishlisted) {
+                $(this).removeClass('wishlisted');
+                $(this).html('<i class="far fa-heart"></i> Wishlist');
+                showToast('Removed from wishlist', 'info');
+            } else {
+                $(this).addClass('wishlisted');
+                $(this).html('<i class="fas fa-heart"></i> Wishlisted');
+                showToast('Added to wishlist', 'success');
+            }
+        });
+
+        // Toast notification function
+        function showToast(message, type) {
+            const toast = $('#toastNotification');
+            toast.text(message);
+            toast.removeClass('success error').addClass(type);
+            toast.fadeIn();
+            
+            setTimeout(() => {
+                toast.fadeOut();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+/* Base Styles */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+.shop-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+    border-radius: 5px;
+    border: 1px solid #fff;
+}
+
+.back-button:hover {
+    background-color: #333;
+    padding: 10px;
+    border: solid #fff;
+}
+
+.back-button i {
+    margin-right: 5px;
+}
+
+/* Shop Header */
+.shop-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.shop-header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.shop-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Shop Toolbar */
+.shop-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.results-count {
+    font-size: 14px;
+    color: #666;
+}
+
+.sort-options {
+    /* display: flex; */
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-options label {
+    font-size: 14px;
+}
+
+.sort-options select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.product-badges {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 1;
+}
+
+.badge-new, .badge-sale {
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 3px;
+    color: white;
+}
+
+.badge-new {
+    background: #2a9d8f;
+}
+
+.badge-sale {
+    background: #e63946;
+}
+
+.product-image {
+    width: calc(20% - 15px);
+    text-align: center;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+}
+/* .product-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    overflow: hidden;
+} */
+
+.product-image img {
+    max-width: 100%;
+    max-height: auto;
+}
+
+.product-info {
+    padding: 15px;
+}
+
+.product-info h3 {
+    font-size: 16px;
+    margin: 0 0 10px;
+    font-weight: 500;
+}
+
+.price {
+    margin-bottom: 15px;
+}
+
+.current-price {
+    font-weight: 700;
+    color: #333;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.view-btn, .add-btn {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.view-btn {
+    background: white;
+    color: #333;
+    border: 1px solid #ddd;
+    text-decoration: none;
+}
+
+.view-btn:hover {
+    background: #f5f5f5;
+}
+
+.add-btn {
+    background: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: #000;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 40px;
+}
+
+.page-link, .current-page {
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+}
+
+.current-page {
+    background: #333;
+    color: white;
+    border-color: #333;
+}
+
+.page-link:hover {
+    background: #f5f5f5;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1536px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    .product-info h3 {
+        font-size: 14px;
+    }
+    .current-price {
+        font-size: 14px;
+    }
+
+}
+
+@media (max-width: 1280px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    .product-info h3 {
+        font-size: 14px;
+    }
+    .current-price {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .shop-container {
+        padding: 1.5rem;
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    .product-info h3 {
+        font-size: 12px;
+    }
+    .current-price {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    .product-info h3 {
+        font-size: 12px;
+    }
+    .current-price {
+        font-size: 12px;
+    }
+    
+    .product-actions {
+        flex-direction: column;
+    }
+    
+    .view-btn,
+    .add-btn {
+        font-size: 10px;
+        padding: 6px;
+    }
+}
+
+@media (max-width: 640px) {
+    .shop-container {
+        padding: 1rem;
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    .product-info h3 {
+        font-size: 12px;
+    }
+    .current-price {
+        font-size: 12px;
+    }
+    
+    .product-info {
+        padding: 1rem;
+    }
+    .view-btn,
+    .add-btn {
+        font-size: 10px;
+        padding: 6px;
+    }
+}
+
+@media (max-width: 475px) {
+    .shop-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    .product-info h3 {
+        font-size: 10px;
+    }
+    .current-price {
+        font-size: 10px;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+    }
+    
+    .page-link,
+    .current-page {
+        min-width: 2.25rem;
+        height: 2.25rem;
+        font-size: 0.8rem;
+    }
+    
+}
