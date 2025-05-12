@@ -5,27 +5,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Women Bags's Collection</title>
-    <link rel="stylesheet" href="{% static 'shop/collection.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'Shop/shop.css' %}">
 </head>
 <body>
-    <a href="{% url 'home' %}" class="button back-home">◀︎</a>
-    {% block content %}
-    <h1>Women Bags's Collection</h1>
-    <ul class="product-list">
-        {% for product in products %}
-            <li class="product-item">
-                <a href="{% url 'product_detail' product.id %}" >
-                    <img src="{% static 'Shop/' %}{{ product.image_name }}" alt="{{ product.name }}" class="product-image" loading="lazy">
-                </a>
-                <div class="product-details">
-                    <h3 class="name">{{ product.name }}</h3>
-                    <p class="description">{{ product.description }}</p>
-                    <p class="price">${{ product.price }}</p>
-                    <a href="{% url 'product_detail' product.id %}" class="button view-details">View Details</a>
+    <div class="shop-container">
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    
+        <div class="shop-header">
+            <h1>Women Bags's Collection</h1>
+            <p class="shop-subtitle">Discover our men premium selection of clothing</p>
+        </div>
+
+        <div class="shop-toolbar">
+            <div class="results-count">
+                Showing {{ products.count }} products
+            </div>
+            <div class="sort-options">
+                <label for="sort">Sort by:</label>
+                <select id="sort" name="sort">
+                    <option value="newest">Newest Arrivals</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="popular">Most Popular</option>
+                </select>
+            </div>
+        </div>
+    
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-badges">
+                    {% if product.is_new %}<span class="badge-new">New</span>{% endif %}
+                    {% if product.discount_price %}<span class="badge-sale">Sale</span>{% endif %}
                 </div>
-            </li>
-        {% endfor %}
-    </ul>
-    {% endblock %}
+                
+                <a href="{% url 'product_detail' product.id %}" class="product-image">
+                    <img src="{% static 'Shop/' %}{{ product.image_name }}" alt="{{ product.name }}" loading="lazy">
+                </a>
+                
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <div class="price">
+                        {% if product.discount_price %}
+                        <span class="current-price">${{ product.discount_price }}</span>
+                        <span class="original-price">${{ product.price }}</span>
+                        {% else %}
+                        <span class="current-price">${{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="{% url 'product_detail' product.id %}" class="view-btn">View Details</a>
+                        <button class="add-btn" data-product-id="{{ product.id }}">
+                            <i class="fas fa-shopping-cart"></i> Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if products.has_other_pages %}
+        <div class="pagination">
+            {% if products.has_previous %}
+            <a href="?page=1" class="page-link">&laquo;</a>
+            <a href="?page={{ products.previous_page_number }}" class="page-link">&lsaquo;</a>
+            {% endif %}
+            
+            {% for num in products.paginator.page_range %}
+                {% if products.number == num %}
+                <span class="current-page">{{ num }}</span>
+                {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if products.has_next %}
+            <a href="?page={{ products.next_page_number }}" class="page-link">&rsaquo;</a>
+            <a href="?page={{ products.paginator.num_pages }}" class="page-link">&raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>    
+
+    <script>
+        // Sort functionality
+        document.getElementById('sort').addEventListener('change', function() {
+            const sortValue = this.value;
+            // Implement sorting logic here
+            console.log('Sort by:', sortValue);
+        });
+
+        // Add to cart functionality
+        document.querySelectorAll('.add-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const productId = this.dataset.productId;
+                // Implement add to cart logic here
+                console.log('Add product:', productId);
+            });
+        });
+    </script>
 </body>
 </html>

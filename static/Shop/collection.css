@@ -1,8 +1,9 @@
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
     color: #333;
+    background-color: #f9f9f9;
     margin: 0;
     padding: 0;
 }
@@ -17,9 +18,8 @@ h1 {
 /* Product List Styles */
 .product-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    list-style: none;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
     justify-items: center;
     padding: 20px;
 }
@@ -73,28 +73,50 @@ h1 {
     color: #333;
 }
 
-.button {
-    display: inline-block;
-    background-color: #999;
-    color: #fff;
-    padding: 10px 20px;
+.product-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.view-btn, .add-btn {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
     border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.view-btn {
+    background: white;
+    color: #333;
+    border: 1px solid #ddd;
     text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 10px;
 }
 
-.button:hover {
-    background-color: #d8d8d8;
-    transform: translateY(-2px);
+.view-btn:hover {
+    background: #f5f5f5;
 }
 
-.button.back-home {
-    border-radius: 100px;
-    background-color: #999;
+.add-btn {
+    background: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: #000;
 }
 
 /* Responsive Design */
+@media (max-width: 1536px) {
+    .product-list {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+}
 @media screen and (max-width: 1024px) {
     .product-list {
         grid-template-columns: repeat(3, 1fr);

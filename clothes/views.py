@@ -43,7 +43,7 @@ def search(request):
         )
     else:
         products = Product.objects.all()
-    return render(request, 'search_results.html', {'products': products, 'query': query})
+    return render(request, 'search.html', {'products': products, 'query': query})
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)

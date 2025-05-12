@@ -30,6 +30,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
 
     # Men Categories
+    path('men/', views.men, name='men'),
     path('men/shirts/', views.men_shirts, name='men/men_shirts'),
     path('men/t_shirts/', views.men_tshirts, name='men/men_t_shirts'),
     path('men/polo_shirts/', views.men_polo_shirts, name='men/men_polo_shirts'),
@@ -46,6 +47,7 @@ urlpatterns = [
     path('men/perfume/', views.men_perfume, name='men/men_perfume'),
 
     # Women Categories
+    path('women/', views.women, name='women'),
     path('women/shirts/', views.women_shirts, name='women/women_shirts'),
     path('women/t_shirts/', views.women_tshirts, name='women/women_t_shirts'),
     path('women/tops/', views.women_tops, name='women/women_tops'),
