@@ -23,41 +23,41 @@
                 <li class="nav-item">
                     <a href="{% url 'men' %}" class="nav-link">MEN</a>
                     <div class="submenu">
-                        <a href="{% url 'men_shirts' %}">SHIRTS</a>
-                        <a href="{% url 'men_t_shirts' %}">T-SHIRTS</a>
-                        <a href="{% url 'men_polo_shirts' %}">POLO SHIRTS</a>
-                        <a href="{% url 'men_blazers' %}">BLAZERS</a>
-                        <a href="{% url 'men_jackets' %}">JACKETS</a>
-                        <a href="{% url 'men_hoodies_sweatshirts' %}">HOODIES | SWEATSHIRTS</a>
-                        <a href="{% url 'men_sweaters_cardigans' %}">SWEATERS | CARDIGANS</a>
-                        <a href="{% url 'men_jeans' %}">JEANS</a>
-                        <a href="{% url 'men_trousers' %}">TROUSERS</a>
-                        <a href="{% url 'men_shorts' %}">SHORTS</a>
-                        <a href="{% url 'men_shoes' %}">SHOES</a>
-                        <a href="{% url 'men_bags' %}">BAGS</a>
-                        <a href="{% url 'men_accessories' %}">ACCESSORIES</a>
-                        <a href="{% url 'men_perfume' %}">PERFUMES</a>
+                        <a href="{% url 'men/men_shirts' %}">SHIRTS</a>
+                        <a href="{% url 'men/men_t_shirts' %}">T-SHIRTS</a>
+                        <a href="{% url 'men/men_polo_shirts' %}">POLO SHIRTS</a>
+                        <a href="{% url 'men/men_blazers' %}">BLAZERS</a>
+                        <a href="{% url 'men/men_jackets' %}">JACKETS</a>
+                        <a href="{% url 'men/men_hoodies_sweatshirts' %}">HOODIES | SWEATSHIRTS</a>
+                        <a href="{% url 'men/men_sweaters_cardigans' %}">SWEATERS | CARDIGANS</a>
+                        <a href="{% url 'men/men_jeans' %}">JEANS</a>
+                        <a href="{% url 'men/men_trousers' %}">TROUSERS</a>
+                        <a href="{% url 'men/men_shorts' %}">SHORTS</a>
+                        <a href="{% url 'men/men_shoes' %}">SHOES</a>
+                        <a href="{% url 'men/men_bags' %}">BAGS</a>
+                        <a href="{% url 'men/men_accessories' %}">ACCESSORIES</a>
+                        <a href="{% url 'men/men_perfume' %}">PERFUMES</a>
                     </div>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'women' %}" class="nav-link">WOMEN</a>
                     <div class="submenu">
-                        <a href="{% url 'women_shirts' %}">SHIRTS</a>
-                        <a href="{% url 'women_t_shirts' %}">T-SHIRTS</a>
-                        <a href="{% url 'women_tops' %}">TOPS</a>
-                        <a href="{% url 'women_dresses' %}">DRESSES</a>
-                        <a href="{% url 'women_polo_shirts' %}">POLO SHIRTS</a>
-                        <a href="{% url 'women_blazers' %}">BLAZERS</a>
-                        <a href="{% url 'women_jackets' %}">JACKETS</a>
-                        <a href="{% url 'women_hoodies_sweatshirts' %}">HOODIES | SWEATSHIRTS</a>
-                        <a href="{% url 'women_sweaters_cardigans' %}">SWEATERS | CARDIGANS</a>
-                        <a href="{% url 'women_shorts' %}">SHORTS</a>
-                        <a href="{% url 'women_jeans' %}">JEANS</a>
-                        <a href="{% url 'women_trousers' %}">TROUSERS</a>
-                        <a href="{% url 'women_shoes' %}">SHOES</a>
-                        <a href="{% url 'women_bags' %}">BAGS</a>
-                        <a href="{% url 'women_accessories' %}">ACCESSORIES</a>
-                        <a href="{% url 'women_perfume' %}">PERFUMES</a>
+                        <a href="{% url 'women/women_shirts' %}">SHIRTS</a>
+                        <a href="{% url 'women/women_t_shirts' %}">T-SHIRTS</a>
+                        <a href="{% url 'women/women_tops' %}">TOPS</a>
+                        <a href="{% url 'women/women_dresses' %}">DRESSES</a>
+                        <a href="{% url 'women/women_polo_shirts' %}">POLO SHIRTS</a>
+                        <a href="{% url 'women/women_blazers' %}">BLAZERS</a>
+                        <a href="{% url 'women/women_jackets' %}">JACKETS</a>
+                        <a href="{% url 'women/women_hoodies_sweatshirts' %}">HOODIES | SWEATSHIRTS</a>
+                        <a href="{% url 'women/women_sweaters_cardigans' %}">SWEATERS | CARDIGANS</a>
+                        <a href="{% url 'women/women_shorts' %}">SHORTS</a>
+                        <a href="{% url 'women/women_jeans' %}">JEANS</a>
+                        <a href="{% url 'women/women_trousers' %}">TROUSERS</a>
+                        <a href="{% url 'women/women_shoes' %}">SHOES</a>
+                        <a href="{% url 'women/women_bags' %}">BAGS</a>
+                        <a href="{% url 'women/women_accessories' %}">ACCESSORIES</a>
+                        <a href="{% url 'women/women_perfume' %}">PERFUMES</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -166,36 +166,6 @@
             </div>
         </section>
 
-        <!-- About Section -->
-        <section class="about-section" id="about">
-            <h2 class="section-title">About Us</h2>
-            <div class="section-content">
-                <div class="about-image-wrapper">
-                    <img src="{% static 'about-image.jpg' %}" alt="About" class="about-image">
-                </div>
-                <div class="about-details">
-                    <p class="text">
-                        Welcome to our Clothing Store, where fashion meets individuality. We believe 
-                        that clothing is more than just fabric—it's a way to express who you are. Whether 
-                        you're searching for the perfect outfit, exploring new trends, or seeking something 
-                        timeless, we're here to help you look and feel your best. With a diverse range of 
-                        styles, sizes, and preferences, we're confident you'll find exactly what you're 
-                        looking for. Enjoy shopping with us and let your personal style shine!
-                    </p>
-                    <p class="text">
-                        At ARTISAN, we pride ourselves on being a go-to destination for fashion lovers. 
-                        We're dedicated to providing an exceptional shopping experience in a cozy and 
-                        inviting atmosphere, where guests can relax, unwind, and enjoy their time in comfort.
-                    </p>
-                    <div class="social-link-list">
-                        <a href="https://www.facebook.com" class="social-link"><i class="fa-brands fa-facebook"></i></a>
-                        <a href="https://www.instagram.com" class="social-link"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://www.tiktok.com" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Shop Section -->
         <section class="shop-section" id="shop">
             <h2 class="section-title">Our Collection</h2>
@@ -236,6 +206,36 @@
             </div>
             <div class="view-all">
                 <a href="{% url 'shop' %}" class="btn-primary">View All Products</a> 
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <h2 class="section-title">About Us</h2>
+            <div class="section-content">
+                <div class="about-image-wrapper">
+                    <img src="{% static 'about-image.jpg' %}" alt="About" class="about-image">
+                </div>
+                <div class="about-details">
+                    <p class="text">
+                        Welcome to our Clothing Store, where fashion meets individuality. We believe 
+                        that clothing is more than just fabric—it's a way to express who you are. Whether 
+                        you're searching for the perfect outfit, exploring new trends, or seeking something 
+                        timeless, we're here to help you look and feel your best. With a diverse range of 
+                        styles, sizes, and preferences, we're confident you'll find exactly what you're 
+                        looking for. Enjoy shopping with us and let your personal style shine!
+                    </p>
+                    <p class="text">
+                        At ARTISAN, we pride ourselves on being a go-to destination for fashion lovers. 
+                        We're dedicated to providing an exceptional shopping experience in a cozy and 
+                        inviting atmosphere, where guests can relax, unwind, and enjoy their time in comfort.
+                    </p>
+                    <div class="social-link-list">
+                        <a href="https://www.facebook.com" class="social-link"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
             </div>
         </section>
 

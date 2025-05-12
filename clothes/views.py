@@ -327,124 +327,124 @@ def women(request):
 # Men's Subcategories
 def men_shirts(request):
     products = Product.objects.filter(category='men', subcategory='shirts')
-    return render(request, 'men_shirts.html', {'products': products})
+    return render(request, 'men/men_shirts.html', {'products': products})
 
 def men_tshirts(request):
     products = Product.objects.filter(category='men', subcategory='t_shirts')
-    return render(request, 'men_t_shirts.html', {'products': products})
+    return render(request, 'men/men_t_shirts.html', {'products': products})
 
 def men_polo_shirts(request):
     products = Product.objects.filter(category='men', subcategory='polo_shirts')
-    return render(request, 'men_polo_shirts.html', {'products': products})
+    return render(request, 'men/men_polo_shirts.html', {'products': products})
 
 def men_blazers(request):
     products = Product.objects.filter(category='men', subcategory='blazers')
-    return render(request, 'men_blazers.html', {'products': products})
+    return render(request, 'men/men_blazers.html', {'products': products})
 
 def men_jackets(request):
     products = Product.objects.filter(category='men', subcategory='jackets')
-    return render(request, 'men_jackets.html', {'products': products})
+    return render(request, 'men/men_jackets.html', {'products': products})
 
 def men_hoodies_sweatshirts(request):
     products = Product.objects.filter(category='men', subcategory='hoodies_sweatshirts')
-    return render(request, 'men_hoodies_sweatshirts.html', {'products': products})
+    return render(request, 'men/men_hoodies_sweatshirts.html', {'products': products})
 
 def men_sweaters_cardigans(request):
     products = Product.objects.filter(category='men', subcategory='sweaters_cardigans')
-    return render(request, 'men_sweaters_cardigans.html', {'products': products})
+    return render(request, 'men/men_sweaters_cardigans.html', {'products': products})
 
 def men_jeans(request):
     products = Product.objects.filter(category='men', subcategory='jeans')
-    return render(request, 'men_jeans.html', {'products': products})
+    return render(request, 'men/men_jeans.html', {'products': products})
 
 def men_trousers(request):
     products = Product.objects.filter(category='men', subcategory='trousers')
-    return render(request, 'men_trousers.html', {'products': products})
+    return render(request, 'men/men_trousers.html', {'products': products})
 
 def men_shorts(request):
     products = Product.objects.filter(category='men', subcategory='shorts')
-    return render(request, 'men_shorts.html', {'products': products})
+    return render(request, 'men/men_shorts.html', {'products': products})
 
 def men_shoes(request):
     products = Product.objects.filter(category='men', subcategory='shoes')
-    return render(request, 'men_shoes.html', {'products': products})
+    return render(request, 'men/men_shoes.html', {'products': products})
 
 def men_bags(request):
     products = Product.objects.filter(category='men', subcategory='bags')
-    return render(request, 'men_bags.html', {'products': products})
+    return render(request, 'men/men_bags.html', {'products': products})
 
 def men_accessories(request):
     products = Product.objects.filter(category='men', subcategory='accessories')
-    return render(request, 'men_accessories.html', {'products': products})
+    return render(request, 'men/men_accessories.html', {'products': products})
 
 def men_perfume(request):
     products = Product.objects.filter(category='men', subcategory='perfume')
-    return render(request, 'men_perfume.html', {'products': products})
+    return render(request, 'men/men_perfume.html', {'products': products})
 
 # Women's Subcategories
 def women_shirts(request):
     products = Product.objects.filter(category='women', subcategory='shirts')
-    return render(request, 'women_shirts.html', {'products': products})
+    return render(request, 'women/women_shirts.html', {'products': products})
 
 def women_tshirts(request):
     products = Product.objects.filter(category='women', subcategory='t_shirts')
-    return render(request, 'women_t_shirts.html', {'products': products})
+    return render(request, 'women/women_t_shirts.html', {'products': products})
 
 def women_tops(request):
     products = Product.objects.filter(category='women', subcategory='tops')
-    return render(request, 'women_tops.html', {'products': products})
+    return render(request, 'women/women_tops.html', {'products': products})
 
 def women_dresses(request):
     products = Product.objects.filter(category='women', subcategory='dresses')
-    return render(request, 'women_dresses.html', {'products': products})
+    return render(request, 'women/women_dresses.html', {'products': products})
 
 def women_polo_shirts(request):
     products = Product.objects.filter(category='women', subcategory='polo_shirts')
-    return render(request, 'women_polo_shirts.html', {'products': products})
+    return render(request, 'women/women_polo_shirts.html', {'products': products})
 
 def women_blazers(request):
     products = Product.objects.filter(category='women', subcategory='blazers')
-    return render(request, 'women_blazers.html', {'products': products})
+    return render(request, 'women/women_blazers.html', {'products': products})
 
 def women_jackets(request):
     products = Product.objects.filter(category='women', subcategory='jackets')
-    return render(request, 'women_jackets.html', {'products': products})
+    return render(request, 'women/women_jackets.html', {'products': products})
 
 def women_hoodies_sweatshirts(request):
     products = Product.objects.filter(category='women', subcategory='hoodies_sweatshirts')
-    return render(request, 'women_hoodies_sweatshirts.html', {'products': products})
+    return render(request, 'women/women_hoodies_sweatshirts.html', {'products': products})
 
 def women_sweaters_cardigans(request):
     products = Product.objects.filter(category='women', subcategory='sweaters_cardigans')
-    return render(request, 'women_sweaters_cardigans.html', {'products': products})
+    return render(request, 'women/women_sweaters_cardigans.html', {'products': products})
 
 def women_shorts(request):
     products = Product.objects.filter(category='women', subcategory='shorts')
-    return render(request, 'women_shorts.html', {'products': products})
+    return render(request, 'women/women_shorts.html', {'products': products})
 
 def women_jeans(request):
     products = Product.objects.filter(category='women', subcategory='jeans')
-    return render(request, 'women_jeans.html', {'products': products})
+    return render(request, 'women/women_jeans.html', {'products': products})
 
 def women_trousers(request):
     products = Product.objects.filter(category='women', subcategory='trousers')
-    return render(request, 'women_trousers.html', {'products': products})
+    return render(request, 'women/women_trousers.html', {'products': products})
 
 def women_shoes(request):
     products = Product.objects.filter(category='women', subcategory='shoes')
-    return render(request, 'women_shoes.html', {'products': products})
+    return render(request, 'women/women_shoes.html', {'products': products})
 
 def women_bags(request):
     products = Product.objects.filter(category='women', subcategory='bags')
-    return render(request, 'women_bags.html', {'products': products})
+    return render(request, 'women/women_bags.html', {'products': products})
 
 def women_accessories(request):
     products = Product.objects.filter(category='women', subcategory='accessories')
-    return render(request, 'women_accessories.html', {'products': products})
+    return render(request, 'women/women_accessories.html', {'products': products})
 
 def women_perfume(request):
     products = Product.objects.filter(category='women', subcategory='perfume')
-    return render(request, 'women_perfume.html', {'products': products})
+    return render(request, 'women/women_perfume.html', {'products': products})
 
 # ================ RECOMMENDATION SYSTEM ================
 def track_interaction(user, product, interaction_type):

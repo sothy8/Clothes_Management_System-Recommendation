@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women Shorts's Collection</title>
+    <link rel="stylesheet" href="{% static 'shop/collection.css' %}">
+</head>
+<body>
+    <a href="{% url 'home' %}" class="button back-home">◀︎</a>
+    {% block content %}
+    <h1>Women Shorts's Collection</h1>
+    <ul class="product-list">
+        {% for product in products %}
+            <li class="product-item">
+                <a href="{% url 'product_detail' product.id %}" >
+                    <img src="{% static 'Shop/' %}{{ product.image_name }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+                </a>
+                <div class="product-details">
+                    <h3 class="name">{{ product.name }}</h3>
+                    <p class="description">{{ product.description }}</p>
+                    <p class="price">${{ product.price }}</p>
+                    <a href="{% url 'product_detail' product.id %}" class="button view-details">View Details</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endblock %}
+</body>
+</html>
