@@ -21,7 +21,7 @@ a {
     text-align: center;
     padding: 60px 0 20px;
     text-transform: uppercase;
-    font-size: 2rem;
+    font-size: 1.6rem;
 }
 
 .section-title::after {
@@ -66,7 +66,7 @@ header .nav-logo {
     font-family: 'Lucida Sans Unicode';
     padding-left: 3rem;
     color: #333; 
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: bold;
     text-decoration: none;
 }
@@ -164,7 +164,7 @@ header .nav-logo {
     background: none;
     border: none;
     left: 25px;
-    font-size: 2rem;
+    font-size: 1.8rem;
     cursor: pointer;
     color: #333; 
     z-index: 1100;
@@ -197,7 +197,7 @@ header .nav-logo {
     padding: 10px;
     border: 1px solid #ccc; 
     outline: none;
-    font-size: 16px;
+    font-size: 14px;
     width: 250px;
     border-radius: 25px;
     text-decoration: none;
@@ -933,7 +933,7 @@ header .nav-logo {
         gap: 5px;
     }
     .profile-link, .cart-link {
-        font-size: 1rem;
+        font-size: 1.4rem;
         padding: 4px 6px;
     }
     .cart-link i, .profile-link i , .search-button i {
@@ -965,21 +965,21 @@ header .nav-logo {
 /* Responsive media query code max width 640px */
 @media screen and (max-width: 640px) {
     .nav-logo .logo-text {
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
     #menu-toggle-button {
-        font-size: 1rem;
+        font-size: 1.2rem;
         padding: 4px 8px;
     }
     .right-bar {
         gap: 5px;
     }
     .profile-link, .cart-link {
-        font-size: 1rem;
+        font-size: 1.2rem;
         padding: 4px 6px;
     }
     .cart-link i, .profile-link i, .search-button i{
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
     .hero-details .subtitle {
         font-size: 1rem;

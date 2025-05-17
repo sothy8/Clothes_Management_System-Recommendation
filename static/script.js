@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
             delay: 5000, // Change slide every 5 seconds
             disableOnInteraction: false,
         },
-        speed: 1000, // Smooth transition speed
+        speed: 800, // Smooth transition speed
         slidesPerView: 3, // Show 3 slides per view
         slidesPerGroup: 3, // Slide 3 slides at a time
         pagination: {
@@ -33,32 +33,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Swiper Initialization for About Section
-    // const aboutSwiper = new Swiper('.about-swiper', {
-    //     loop: true, // Enables infinite looping
-    //     autoplay: {
-    //         delay: 5000, // Change slide every 5 seconds
-    //         disableOnInteraction: false, // Continue autoplay after user interaction
-    //     },
-    //     speed: 1000, // Smooth transition speed
-    //     slidesPerView: 1, // Show 1 slide at a time
-    //     pagination: {
-    //         el: '.swiper-pagination', // Pagination element
-    //         clickable: true, // Allow pagination bullets to be clickable
-    //     },
-    //     navigation: {
-    //         nextEl: '.swiper-button-next', // Next button
-    //         prevEl: '.swiper-button-prev', // Previous button
-    //     },
-    // });
-
     const testimonialSwiper = new Swiper(".slider-wrapper", {
         loop: true,
         autoplay: {
             delay: 5000,
             disableOnInteraction: false,
         },
-        speed: 1000,
+        speed: 800,
         slidesPerView: 1,
         slidesPerGroup: 1,
         pagination: {
