@@ -90,6 +90,15 @@ class Cart(models.Model):
         return f"{self.user.username} - {self.product.name} ({self.size}, {self.quantity})"
 
 #Feedback from users
+class About(models.Model):
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='static/abouts/', blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+#Feedback from users
 class Testimonial(models.Model):
     name = models.CharField(max_length=100)
     feedback = models.TextField()

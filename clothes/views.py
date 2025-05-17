@@ -11,7 +11,7 @@ from django.utils import timezone
 
 from .models import (
     UserProfile, Product, Order, OrderItem, Recommendation, 
-    UserInteraction, Cart, Testimonial,
+    UserInteraction, Cart, Testimonial, About
 )
 from .forms import (
     SearchForm, ContactForm, TestimonialForm, 
@@ -23,7 +23,8 @@ from .forms import (
 def home(request):
     products = Product.objects.all()
     testimonials = Testimonial.objects.all()
-    return render(request, 'home.html', {'products': products, 'testimonials': testimonials})
+    abouts = About.objects.all() 
+    return render(request, 'home.html', {'products': products, 'abouts': abouts, 'testimonials': testimonials})
 
 def contact(request):
     if request.method == 'POST':

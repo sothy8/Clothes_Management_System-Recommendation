@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, Product, Order, OrderItem, Recommendation, Testimonial
+from .models import UserProfile, Product, Order, OrderItem, Recommendation, Testimonial, About
 from django.contrib.auth.models import User
 
 # Register UserProfile
@@ -45,5 +45,10 @@ class RecommendationAdmin(admin.ModelAdmin):
 class TestimonialAdmin(admin.ModelAdmin):
     list_display = ('name', 'feedback', 'image')
     search_fields = ('name', 'feedback')
+    
+@admin.register(About)
+class AboutAdmin(admin.ModelAdmin):
+    list_display = ('name', 'position', 'image')
+    search_fields = ('name', 'position')
 
 

@@ -213,8 +213,21 @@
         <section class="about-section" id="about">
             <h2 class="section-title">About Us</h2>
             <div class="section-content">
-                <div class="about-image-wrapper">
-                    <img src="{% static 'about-image.jpg' %}" alt="About" class="about-image">
+                <div class="slider-container swiper">
+                    <div class="slider-wrapper">
+                        <ul class="abouts-list swiper-wrapper">
+                            {% for about in abouts %}
+                                <li class="about swiper-slide">
+                                    <img src="{{ about.image.url }}" alt="{{ about.name }}" class="about-image">
+                                    <h3 class="name">{{ about.name }}</h3>
+                                    <i class="position">{{ about.position }}</i>
+                                </li>
+                            {% endfor %}
+                        </ul><br>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-slide-button swiper-button-prev"></div>
+                        <div class="swiper-slide-button swiper-button-next"></div>
+                    </div>
                 </div>
                 <div class="about-details">
                     <p class="text">
