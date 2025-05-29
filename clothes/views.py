@@ -106,13 +106,15 @@ def signin(request):
 def profile(request):
     user_form = CustomUserChangeForm(instance=request.user)
     password_form = PasswordChangeForm(user=request.user)
-
+    profile_form = UserProfileForm(instance=request.user.userprofile)
+    
     if request.method == 'POST':
         if 'update_profile' in request.POST:
             user_form = CustomUserChangeForm(request.POST, instance=request.user)
             profile_form = UserProfileForm(request.POST, instance=request.user.userprofile)
-            if user_form.is_valid():
+            if user_form.is_valid() and profile_form.is_valid():
                 user_form.save()
+                profile_form.save()
                 messages.success(request, "Profile updated successfully.")
                 return redirect('profile')
         elif 'change_password' in request.POST:
