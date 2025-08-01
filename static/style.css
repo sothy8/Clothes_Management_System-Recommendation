@@ -21,35 +21,81 @@ a {
     text-align: center;
     padding: 60px 0 20px;
     text-transform: uppercase;
-    font-size: 1.6rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #333, #666, #999);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
 }
 
 .section-title::after {
     content: "";
-    width: 80px;
-    height: 5px;
+    width: 120px;
+    height: 4px;
     display: block;
-    margin: 10px auto 0;
+    margin: 15px auto 0;
     border-radius: 8px;
-    background: #333;
+    background: linear-gradient(90deg, #ff6b6b, #ffd700, #38ef7d, #11998e);
+    background-size: 200% 200%;
+    animation: rainbowFlow 2s linear infinite;
+}
+
+@keyframes rainbowFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Inter', 'Arial', sans-serif;
     line-height: 1.6;
-    background-color: #fff; 
-    color: #333; 
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+    color: #fff;
     overflow-x: hidden;
+    min-height: 100vh;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Add floating elements to body */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px, 80px 80px, 40px 40px;
+    animation: sparkle 4s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
 }
 
 /* Header & Navigation */
 header {
-    background-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: fixed;
     width: 100%;
     z-index: 5;
-    color: #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 header .navbar {
@@ -63,13 +109,29 @@ header .nav-logo {
     position: absolute;
     background: none;
     border: none;
+    font-family: 'Playfair Display', serif;
+    padding-left: 3rem;
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-decoration: none;
+    background: linear-gradient(100deg, #ffffff, #333, #444, #555, #666);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* header .nav-logo {
+    position: absolute;
+    background: none;
+    border: none;
     font-family: 'Lucida Sans Unicode';
     padding-left: 3rem;
     color: #333; 
     font-size: 1.4rem;
     font-weight: bold;
     text-decoration: none;
-}
+} */
 
 .navbar .nav-menu {
     display: flex;
@@ -77,7 +139,8 @@ header .nav-logo {
     margin-top: 80px;
     max-height: 90vh;
     overflow-y: auto;
-    border: #252525;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(20px);
 }
 
 .navbar {
@@ -95,6 +158,7 @@ header .nav-logo {
     top: 0;
     left: 0;
     background-color: #fff;
+    backdrop-filter: blur(20px);
     padding: 1rem;
     z-index: 1000;
     transform: translateX(-100%);
@@ -111,12 +175,12 @@ header .nav-logo {
 }
 
 .nav-item a {
-    color: #333;
+    color: #fff;
     text-decoration: none;
     font-size: 1rem;
     padding: 1.2rem;
     border-radius: 30px;
-    transition: 0.05s ease;
+    transition: all 0.3s ease;
 }
 
 .nav-link {
@@ -131,12 +195,12 @@ header .nav-logo {
     color: #333;
     font-size: 1.5rem;
     border-radius: 30px;
-    transition: 0.05s ease;
+    transition: 0.3s ease;
 }
 
 .navbar .nav-menu .nav-link:hover {
     color: #2a2222;
-    background: #ccc;
+    transform: translateX(5px);
 }
 
 .submenu {
@@ -152,6 +216,8 @@ header .nav-logo {
     padding: 8px 12px;
     color: #333;
     text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
 }
 
 .submenu a:hover {
@@ -201,7 +267,21 @@ header .nav-logo {
     width: 250px;
     border-radius: 25px;
     text-decoration: none;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: #333;
+    transition: all 0.3s ease;
 }
+
+.search-input:focus {
+    border-color: rgba(66, 45, 45, 0.5);
+    box-shadow: 0 0 20px rgba(46, 37, 37, 0.3);
+}
+
+.search-input::placeholder {
+    color: #333;
+}
+
 .search-button {
     padding-left: 10px;
     background-color: #fff;
@@ -215,7 +295,16 @@ header .nav-logo {
     gap: 10px;
     cursor: pointer;
     text-decoration: none;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
 }
+
+.profile-link:hover, .cart-link:hover, .search-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
 /* Profile Dropdown Styles */
 .profile-dropdown {
     position: relative;
@@ -360,7 +449,7 @@ header .nav-logo {
     margin: 30px;
 }
 .about-section .about-details .text {
-    font-family: 'Trebuchet MS', sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 25px;
     margin: 20px 0 20px;
     text-align: center;
@@ -429,6 +518,7 @@ header .nav-logo {
     background-color: #fff;
     color: #333;
     border-top: 1px solid #ccc;
+    backdrop-filter: blur(10px);
 }
 
 .shop-image-wrapper .swiper-container {
@@ -459,26 +549,52 @@ header .nav-logo {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    justify-content: center;
 }
 
 .product-item {
     width: calc(25% - 15px);
     text-align: center;
     border: 1px solid #ccc;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
-
+.product-item::before {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 215, 0, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.product-item:hover::before {
+    opacity: 1;
+}
+.product-item:hover {
+    transform: translateY(-10px) scale(1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
 .product-image {
     width: 100%;
     height: auto;
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
 }
 
 .product-details .name {
-    font-size: 16px;
+    font-size: 1.2rem;
     margin-bottom: 10px;
 }
 
 .product-details .price {
-    font-size: 16px;
+    font-size: 1.2rem;
     color: #333; 
 }
 
@@ -487,27 +603,56 @@ header .nav-logo {
     color: #fff;
     padding: 10px 20px;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 /* Style for the Add to Cart button */
 .button.add-to-cart {
     background-color: #999;
     color: white;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
     text-decoration: none;
     font-size: 16px;
+    border: none;
+    transition: all 0.3s ease;
 }
 
 .button.add-to-cart:hover {
     background-color: #333;
 }
 
+.btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b6b, #56b2f3, #38ef7d);
+    background-size: 200% 200%;
+    color: #000;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.4s ease;
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+    animation: buttonGlow 2s ease-in-out infinite alternate;
+}
+
+.btn-primary:hover {
+    background-position: 100% 0;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0px 15px 35px rgba(255, 107, 107, 0.4);
+}
+
+@keyframes buttonGlow {
+    from { background-position: 0% 50%; }
+    to { background-position: 100% 50%; }
+}
+
 /* Style for the product options */
 .product-options {
-
     list-style-type: none;
     padding: 10px 20px;
     margin: 2px;
@@ -611,6 +756,8 @@ header .nav-logo {
     width: 250px;
     height: 250px;
     margin-bottom: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 .testimonial .name {
     font-size: 20px;

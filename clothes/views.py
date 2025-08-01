@@ -20,6 +20,10 @@ from .forms import (
 )
 
 # ================ MAIN PAGES ================
+def opening(request):
+    """View for the opening page"""
+    return render(request, 'opening.html')
+
 def home(request):
     products = Product.objects.all()
     testimonials = Testimonial.objects.all()
