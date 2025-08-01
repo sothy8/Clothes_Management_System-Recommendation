@@ -30,6 +30,14 @@ def home(request):
     abouts = About.objects.all() 
     return render(request, 'home.html', {'products': products, 'abouts': abouts, 'testimonials': testimonials})
 
+def privacy_policy(request):
+    """View for privacy policy page"""
+    return render(request, 'privacy_policy.html')
+
+def refund_policy(request):
+    """View for refund policy page"""
+    return render(request, 'refund_policy.html')
+
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)

@@ -30,6 +30,10 @@ urlpatterns = [
     # Contact and Search
     path('contact/', views.contact, name='contact'),
     path('search/', views.search, name='search'),
+    
+    # Policy
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+    path('refund-policy/', views.refund_policy, name='refund_policy'),
 
     # Men Categories
     path('men/', views.men, name='men'),
