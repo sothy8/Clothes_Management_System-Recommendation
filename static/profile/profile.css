@@ -1,174 +1,499 @@
-/* Modern Profile Page Styling */
-
-body {
-    font-family: sans-serif; 
-    background: -webkit-linear-gradient(to right, #155799, #159957);  
-    background: linear-gradient(to right, #155799, #159957); 
-    color: whitesmoke;
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-a.button {
-    display: inline-block;
-    background: linear-gradient(135deg, #6e8efb, #a777e3); /* Gradient background */
-    color: #fff;
-    padding: 14px 20px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    width: auto; /* Adjust width as needed */
-    font-size: 18px;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Smooth transitions */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+body, html {
+    height: 100%;
+    overflow: auto;
+    font-family: 'Inter', sans-serif;
 }
 
-a.button:hover {
-    background: linear-gradient(135deg, #a777e3, #6e8efb); /* Hover gradient background */
-    transform: translateY(-2px); /* Slight lift effect */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
+/* Modern GenZ Animated Background */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #292929 0%, #393939 25%, #9999995d 50%, #66666640 75%, #3333 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+    z-index: -2;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Fashion-inspired floating elements */
+.floating-shape {
+    position: absolute;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    animation: modernFloat 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 120px;
+    height: 80px;
+    top: 15%;
+    left: 10%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 105, 180, 0.2));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation-delay: 0s;
+    transform: rotate(15deg);
+}
+
+.shape-2 {
+    width: 100px;
+    height: 100px;
+    top: 25%;
+    right: 15%;
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(30, 144, 255, 0.15));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    animation-delay: 1.5s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 120px;
+    top: 55%;
+    left: 8%;
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.12), rgba(255, 215, 0, 0.12));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 40px;
+    animation-delay: 2.5s;
+    transform: rotate(-20deg);
+}
+
+.shape-4 {
+    width: 140px;
+    height: 90px;
+    bottom: 25%;
+    right: 12%;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 45px;
+    animation-delay: 3s;
+    transform: rotate(25deg);
+}
+
+.shape-5 {
+    width: 60px;
+    height: 60px;
+    top: 75%;
+    left: 25%;
+    background: linear-gradient(135deg, rgba(255, 165, 0, 0.15), rgba(255, 69, 0, 0.15));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    animation-delay: 4s;
+    transform: rotate(45deg);
+}
+
+.shape-6 {
+    width: 90px;
+    height: 70px;
+    top: 35%;
+    right: 35%;
+    background: linear-gradient(135deg, rgba(50, 205, 50, 0.12), rgba(0, 191, 255, 0.12));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 35px;
+    animation-delay: 5s;
+    transform: rotate(-10deg);
+}
+
+@keyframes modernFloat {
+    0%, 100% {
+        transform: translateY(0px) translateX(0px) rotate(var(--rotation, 0deg)) scale(1);
+        opacity: 0.6;
+    }
+    25% {
+        transform: translateY(-15px) translateX(10px) rotate(calc(var(--rotation, 0deg) + 5deg)) scale(1.05);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-25px) translateX(-5px) rotate(calc(var(--rotation, 0deg) + 10deg)) scale(1.1);
+        opacity: 1;
+    }
+    75% {
+        transform: translateY(-10px) translateX(15px) rotate(calc(var(--rotation, 0deg) + 5deg)) scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* Add trendy geometric overlay */
+.background-animation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, #ffffff40 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, #9999 1px, transparent 1px),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px, 80px 80px, 40px 40px;
+    animation: sparkle 5s linear infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}
+
+/* Back to home button */
+a.button.back-home {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #740000, #720065);
+    color: #fff;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(116, 0, 0, 0.3);
+    z-index: 1000;
+    animation: fadeIn 1s ease-out;
+}
+
+a.button.back-home:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(116, 0, 0, 0.4);
+    background: linear-gradient(135deg, #720065, #740000);
+}
+
+/* Main container */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    color: #ffffff;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ffffff, #9999);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 60px 0 40px 0;
+    text-align: center;
+    animation: slideInLeft 1.2s ease-out 0.3s both;
 }
 
 h2, h3 {
-    font-family: Monospace;
-    color: whitesmoke; /* Deeper header color */
-    font-weight: 600; /* Slightly bolder headers */
+    font-family: 'Playfair Display', serif;
+    color: #ffffff;
+    font-weight: 600;
     font-size: 30px;
     margin-bottom: 35px;
     text-align: center;
+    animation: slideInRight 1.2s ease-out 0.5s both;
 }
-h1 {
-    font-family: Monospace;
-    color: whitesmoke; /* Deeper header color */
-    font-weight: 600; /* Slightly bolder headers */
-    font-size: 40px;
-    margin: 40px;
-    text-align: center;
-}
+
 .profile-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80%;
+    width: 90%;
     max-width: 1200px;
-    margin: 50px auto; /* More vertical spacing */
-    padding: 30px;
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    background-color: rgba(11, 15, 13, 0.582);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.125);
+    margin: 0 auto 50px auto;
+    padding: 40px;
+    backdrop-filter: blur(70px);
+    background: rgba(80, 80, 80, 0.5);
+    border-radius: 20px;
+    border: 1px solid rgba(75, 75, 75, 0.2);
+    animation: fadeInUp 1.5s ease-out;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .profile-info, .profile-form {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .profile-info p {
-    font-family: Sans-serif;
+    font-family: 'Inter', sans-serif;
     color: #030804;
-    margin: 12px 0 12px 0;
+    margin: 12px 0;
     font-size: 16px;
 }
 
 .profile-info .info-box {
-    background-color:whitesmoke;
-    padding: 5px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 12px;
     margin-bottom: 15px;
-    border: 1px solid #030804;
-
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    animation: fadeIn 0.8s ease-out;
 }
 
+.profile-info .info-box:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styling */
 form {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 /* Input fields */
 input, select, textarea {
     width: 100%;
-    margin: 10px 0;
-    border-radius: 5px;
-    padding: 15px 18px;
+    margin: 10px 0 20px 0;
+    border-radius: 12px;
+    padding: 15px 20px;
     box-sizing: border-box;
-    border: 1px solid #ddd;
-    transition: border-color 0.3s ease; /* Smooth transition */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 input:focus, select:focus, textarea:focus {
-    border-color: #64b5f6; /* Focus border color */
     outline: none;
+    border-color: #740000;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(116, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
-/* Submit button */
+input::placeholder, textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+select option {
+    background: #333;
+    color: #fff;
+}
+
+/* Form labels */
+label {
+    color: #ffffff;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+/* Buttons */
 .button {
-    background-color: #030804;
-    color: white;
-    padding: 14px 20px;
-    border-radius: 5px;
-    margin: 7px 0;
-    width: 100%;
+    display: inline-block;
+    background: linear-gradient(135deg, #740000, #720065, #006025, #006960);
+    background-size: 200% 200%;
+    color: #fff;
+    padding: 18px 30px;
+    border-radius: 50px;
+    margin: 10px 5px;
     font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform for a subtle effect */
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(116, 0, 0, 0.3);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    animation: bounceIn 1s ease-out 1s both;
 }
 
 .button:hover {
-    background-color: #999;
-    transform: translateY(-2px); /* Slight lift effect */
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(116, 0, 0, 0.4);
+    background-position: 100% 0;
 }
 
-/* Change Password Section */
-.change-password {
-    margin-top: 20px;
+.button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
 }
 
-.change-password h2 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: whitesmoke;
+.button:hover::before {
+    left: 100%;
 }
 
+/* Auth prompt for unauthenticated users */
 .auth-prompt {
     text-align: center;
-    margin-top: 120px;
+    padding: 60px 40px;
+    backdrop-filter: blur(70px);
+    background: rgba(80, 80, 80, 0.5);
+    border-radius: 20px;
+    border: 1px solid rgba(75, 75, 75, 0.2);
+    animation: fadeInUp 1.5s ease-out;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    margin: 100px auto;
+}
+
+.auth-prompt h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #ffffff, #9999);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
+}
+
+.auth-prompt p {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin: 20px 0;
 }
 
 .auth-prompt a {
+    color: #9999;
     text-decoration: none;
-    color: #3498db;
-    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-prompt a:hover {
+    color: #ffffff;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Responsive Design */
-@media screen and (max-width: 1024px) {
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    
     .profile-container {
-        padding: 25px;
+        padding: 30px 20px;
+        margin: 20px;
+        width: 95%;
     }
-}
-
-@media screen and (max-width: 768px) {
-    .profile-container {
-        padding: 20px;
+    
+    h2, h3 {
+        font-size: 24px;
     }
-}
-
-@media screen and (max-width: 600px) {
-    input, select, textarea {
-        font-size: 14px;
-    }
-
+    
     .button {
-        font-size: 15px;
-        padding: 12px 20px;
+        padding: 15px 25px;
+        font-size: 16px;
     }
+}
 
-    .profile-info p {
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+        margin: 80px 0 30px 0;
+    }
+    
+    .profile-container {
+        padding: 25px 15px;
+        margin: 10px;
+    }
+    
+    h2, h3 {
+        font-size: 20px;
+    }
+    
+    input, select, textarea {
+        padding: 12px 15px;
+    }
+    
+    .button {
+        padding: 12px 20px;
         font-size: 14px;
+    }
+    
+    .auth-prompt {
+        padding: 40px 20px;
+        margin: 60px auto;
+    }
+    
+    .auth-prompt h2 {
+        font-size: 2rem;
     }
 }

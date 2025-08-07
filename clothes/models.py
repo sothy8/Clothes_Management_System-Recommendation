@@ -1,13 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # User Profile Model
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
+    email = models.EmailField(blank=True)
     date_of_birth = models.DateField(blank=True, null=True)
     height = models.FloatField(blank=True, null=True, help_text="Height in centimeters")
     weight = models.FloatField(blank=True, null=True, help_text="Weight in kilograms")
@@ -20,7 +22,7 @@ class UserProfile(models.Model):
     style_preferences = models.CharField(max_length=100, help_text="Comma-separated preferences", blank=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}" if self.first_name or self.last_name else f"{self.user.username}'s Profile"
 
 # Product Model
 class Product(models.Model):
@@ -195,3 +197,27 @@ class UserInteraction(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.product.name} - {self.interaction_type}"
+
+
+# Django Signals to automatically create UserProfile when User is created
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(
+            user=instance,
+            first_name=instance.first_name,
+            last_name=instance.last_name,
+            email=instance.email
+        )
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    try:
+        instance.userprofile.save()
+    except UserProfile.DoesNotExist:
+        UserProfile.objects.create(
+            user=instance,
+            first_name=instance.first_name,
+            last_name=instance.last_name,
+            email=instance.email
+        )
