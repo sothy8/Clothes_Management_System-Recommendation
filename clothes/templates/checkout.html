@@ -43,57 +43,175 @@
                 {% endfor %}
             </tbody>
         </table>
-        <h3>Total: $<span id="total-amount">{{ total_amount }}</span></h3>
+        <h3>Total: $<span id="total-amount">{{ total_with_shipping }}</span></h3>
 
         <!-- Payment Methods Section -->
-        <form id="payment-form" method="post" action="{% url 'confirm_order' %}">
+        <form id="payment-form" method="post" action="{% url 'confirm_order' %}" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="payment-option">
-                <input type="radio" id="cash" name="payment-method" value="cash" checked>
-                <label for="cash">Cash</label>
+            
+            <!-- Shipping Information -->
+            <div class="shipping-section">
+                <h4>Shipping Information</h4>
+                <div class="form-group">
+                    <label for="shipping_address">Shipping Address *</label>
+                    <textarea id="shipping_address" name="shipping_address" required placeholder="Enter your complete delivery address..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="billing_address">Billing Address (Optional)</label>
+                    <textarea id="billing_address" name="billing_address" placeholder="Enter billing address if different from shipping..."></textarea>
+                </div>
             </div>
-            <div class="payment-option">
-                <input type="radio" id="qr-code" name="payment-method" value="qr-code">
-                <label for="qr-code">QR Code</label>
-            </div>
-            <div class="payment-option">
-                <input type="radio" id="card" name="payment-method" value="card">
-                <label for="card">Credit/Debit Card</label>
+
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <h4>Select Payment Method</h4>
+                
+                <div class="payment-option-card">
+                    <input type="radio" id="cash" name="payment-method" value="cash" checked>
+                    <label for="cash" class="payment-card">
+                        <div class="payment-icon">💵</div>
+                        <div class="payment-info">
+                            <strong>Cash on Delivery</strong>
+                            <p>Pay with cash when your order arrives</p>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="payment-option-card">
+                    <input type="radio" id="qr-code" name="payment-method" value="qr_code">
+                    <label for="qr-code" class="payment-card">
+                        <div class="payment-icon">📱</div>
+                        <div class="payment-info">
+                            <strong>Mobile Banking (QR Code)</strong>
+                            <p>Pay instantly with your mobile banking app</p>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="payment-option-card">
+                    <input type="radio" id="card" name="payment-method" value="card">
+                    <label for="card" class="payment-card">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-info">
+                            <strong>Credit/Debit Card</strong>
+                            <p>Secure payment with Visa, MasterCard, or AMEX</p>
+                        </div>
+                    </label>
+                </div>
             </div>
 
             <!-- Payment Details Section -->
-            <div id="cash-details" class="payment-details">
-                <h4>Cash Payment</h4>
-                <p>Please prepare the exact amount for the delivery person.</p>
+            <div id="cash-details" class="payment-details active">
+                <div class="payment-details-card">
+                    <h4>💵 Cash on Delivery</h4>
+                    <div class="payment-info-box">
+                        <p><strong>How it works:</strong></p>
+                        <ul>
+                            <li>Place your order now</li>
+                            <li>Prepare the exact amount: <strong>${{ total_with_shipping }}</strong></li>
+                            <li>Pay the delivery person when your order arrives</li>
+                        </ul>
+                        <div class="info-highlight">
+                            <strong>⚠️ Important:</strong> Please have the exact amount ready to ensure smooth delivery.
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <div id="qr-code-details" class="payment-details">
-                <h4>QR Code Payment</h4>
-                <p>Scan the QR code below to complete your payment.</p>
-                <div class="QR">
-                    <h5>ABA Bank</h5>
-                    <img src="{% static 'cart/ABA.png' %}" alt="QR Code">
-                </div>
-                <div class="QR">
-                    <h5>ACELEDA Bank</h5>
-                    <img src="{% static 'cart/ACELEDA.png' %}" alt="QR Code">
+                <div class="payment-details-card">
+                    <h4>📱 Mobile Banking Payment</h4>
+                    <div class="bank-selection">
+                        <label for="bank-select">Select Your Bank:</label>
+                        <select id="bank-select" name="selected_bank">
+                            <option value="">Choose your bank...</option>
+                            <option value="aba">ABA Bank</option>
+                            <option value="aceleda">ACELEDA Bank</option>
+                            <option value="canadia">CANADIA Bank</option>
+                        </select>
+                    </div>
+                    
+                    <div id="qr-display" class="qr-display" style="display: none;">
+                        <div class="qr-container">
+                            <div class="qr-header">
+                                <h5 id="selected-bank-name"></h5>
+                                <div class="amount-display">Amount: ${{ total_with_shipping }}</div>
+                            </div>
+                            <div class="qr-code-wrapper">
+                                <img id="qr-image" src="" alt="QR Code" />
+                            </div>
+                            <div class="qr-instructions">
+                                <p><strong>Instructions:</strong></p>
+                                <ol>
+                                    <li>Open your banking app</li>
+                                    <li>Scan the QR code above</li>
+                                    <li>Confirm the payment of ${{ total_with_shipping }}</li>
+                                    <li>Take a screenshot of the confirmation</li>
+                                    <li>Upload the screenshot below</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="screenshot-upload">
+                            <label for="payment_screenshot">Upload Payment Screenshot *</label>
+                            <input type="file" id="payment_screenshot" name="payment_screenshot" accept="image/*">
+                            <div class="upload-hint">
+                                Upload a clear screenshot of your payment confirmation
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div id="card-details" class="payment-details">
-                <h4>Credit/Debit Card Payment</h4>
-                <div id="card-element">
-                    <!-- Stripe Card Element will be inserted here -->
+                <div class="payment-details-card">
+                    <h4>💳 Credit/Debit Card Payment</h4>
+                    <div class="card-logos">
+                        <span class="card-logo">VISA</span>
+                        <span class="card-logo">MasterCard</span>
+                        <span class="card-logo">AMEX</span>
+                    </div>
+                    <div id="card-element" class="card-element">
+                        <!-- Stripe Card Element will be inserted here -->
+                    </div>
+                    <div id="card-errors" role="alert" class="card-errors"></div>
+                    <div class="security-note">
+                        🔒 Your payment information is secure and encrypted
+                    </div>
                 </div>
-                <div id="card-errors" role="alert"></div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary-final">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>${{ total_amount }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>${{ shipping_cost }}</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span><strong>Total:</strong></span>
+                    <span><strong>${{ total_with_shipping }}</strong></span>
+                </div>
             </div>
 
             <!-- Buttons -->
             <div class="button-container">
-                <a href="{% url 'cart' %}" class="button">Back to Cart</a>
-                <button type="submit" class="button">Confirm Order</button>
-                {% comment %} <a href="{% url 'confirm_order' %}" type="submit" class="button">Confirm Order</a> {% endcomment %}
+                <a href="{% url 'cart' %}" class="button button-secondary">← Back to Cart</a>
+                <button type="submit" class="button button-primary" id="submit-button">
+                    <span class="button-text">Complete Order</span>
+                    <span class="button-spinner" style="display: none;">Processing...</span>
+                </button>
             </div>
         </form>
     </div>
-    <script src="{% static 'cart/checkout.js' %}"></script> 
+    <script src="{% static 'cart/checkout.js' %}"></script>
+    <script>
+        // Pass Django data to JavaScript
+        window.STRIPE_PUBLISHABLE_KEY = "{{ stripe_publishable_key|default:'' }}";
+        window.CSRF_TOKEN = "{{ csrf_token }}";
+    </script>
 </body>
 </html>

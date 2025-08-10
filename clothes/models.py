@@ -116,6 +116,11 @@ class Order(models.Model):
         ('qr_code', 'QR Code'),
         ('card', 'Credit/Debit Card'),
     ]
+    BANK_CHOICES = [
+        ('aba', 'ABA Bank'),
+        ('canadia', 'CANADIA Bank'),
+        ('aceleda', 'ACELEDA Bank'),
+    ]
     ORDER_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('paid', 'Paid'),
@@ -123,16 +128,26 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled'),
     ]
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+        ('failed', 'Failed'),
+        ('refunded', 'Refunded'),
+    ]
     order_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Links to the user who placed the order
     order_date = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD_CHOICES, default='pending')
+    selected_bank = models.CharField(max_length=50, choices=BANK_CHOICES, blank=True, null=True)  # Selected bank for QR payment
+    payment_screenshot = models.ImageField(upload_to='payment_screenshots/', blank=True, null=True)  # Payment confirmation screenshot
     shipping_address = models.TextField(blank=True, null=True)  # Shipping address
     billing_address = models.TextField(blank=True, null=True)   # Billing address
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Shipping cost
     estimated_delivery_date = models.DateField(blank=True, null=True)  # Estimated delivery date
     status = models.CharField(max_length=50, choices=ORDER_STATUS_CHOICES, default='pending')  # Order status
+    payment_status = models.CharField(max_length=50, choices=PAYMENT_STATUS_CHOICES, default='pending')  # Payment verification status
+    payment_verified_at = models.DateTimeField(blank=True, null=True)  # When payment was verified
 
     def __str__(self):
         return f"Order {self.order_id} by {self.user.username}"

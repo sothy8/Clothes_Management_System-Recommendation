@@ -185,25 +185,25 @@ body {
     padding: 20px;
     position: relative;
     z-index: 1;
-    color: #ffffff;
+    color: #ffff;
 }
 
 h1 {
     font-family: 'Playfair Display', serif;
     font-size: 3rem;
     font-weight: 600;
-    background: linear-gradient(135deg, #ffffff, #9999);
+    background: #ffff;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin: 60px 0 40px 0;
+    margin: 50px 0 40px 0;
     text-align: center;
     animation: slideInLeft 1.2s ease-out 0.3s both;
 }
 
 h2, h3 {
     font-family: 'Playfair Display', serif;
-    color: #ffffff;
+    color: #ffff;
     font-weight: 600;
     font-size: 30px;
     margin-bottom: 35px;

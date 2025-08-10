@@ -2,12 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm  
 from django.views.decorators.http import require_POST
 from django.utils import timezone
+import logging
+from decimal import Decimal
 
 from .models import (
     UserProfile, Product, Order, OrderItem, Recommendation, 
@@ -234,9 +238,14 @@ def cart(request):
 def checkout(request):
     cart_items = Cart.objects.filter(user=request.user)
     total_amount = sum(item.product.price * item.quantity for item in cart_items)
+    shipping_cost = Decimal('5.00')
+    total_with_shipping = total_amount + shipping_cost
+    
     context = {
         'cart_items': cart_items,
         'total_amount': total_amount,
+        'shipping_cost': shipping_cost,
+        'total_with_shipping': total_with_shipping,
         'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
     }
     return render(request, 'checkout.html', context)
@@ -245,25 +254,47 @@ def checkout(request):
 def confirm_order(request):
     if request.method == 'POST':
         cart_items = Cart.objects.filter(user=request.user)
+        if not cart_items.exists():
+            messages.error(request, 'Your cart is empty.')
+            return redirect('cart')
+            
         total_amount = sum(item.product.price * item.quantity for item in cart_items)
         
+        # Get form data
         payment_method = request.POST.get('payment-method')
+        selected_bank = request.POST.get('selected_bank')
+        payment_screenshot = request.FILES.get('payment_screenshot')
         shipping_address = request.POST.get('shipping_address')
         billing_address = request.POST.get('billing_address')
-        shipping_cost = 5.00  # Example shipping cost
-        estimated_delivery_date = timezone.now() + timezone.timedelta(days=7)  # Example delivery date
+        shipping_cost = Decimal('5.00')  # Standard shipping cost as Decimal
+        estimated_delivery_date = timezone.now() + timezone.timedelta(days=7)
 
+        # Validate required fields
+        if not shipping_address:
+            messages.error(request, 'Shipping address is required.')
+            return redirect('checkout')
+            
+        if payment_method == 'qr_code':
+            if not selected_bank:
+                messages.error(request, 'Please select a bank for QR code payment.')
+                return redirect('checkout')
+            if not payment_screenshot:
+                messages.error(request, 'Please upload payment screenshot for QR code payment.')
+                return redirect('checkout')
+
+        # Handle different payment methods
         if payment_method == 'card':
             payment_method_id = request.POST.get('payment_method_id')
             try:
                 # Create a PaymentIntent with the order amount and currency
                 intent = stripe.PaymentIntent.create(
-                    amount=int(total_amount * 100),  # Amount in cents
+                    amount=int((total_amount + shipping_cost) * 100),  # Amount in cents
                     currency='usd',
                     payment_method=payment_method_id,
                     confirmation_method='manual',
                     confirm=True,
                 )
+                
                 if intent.status == 'requires_action':
                     return JsonResponse({
                         'success': True,
@@ -272,59 +303,102 @@ def confirm_order(request):
                     })
                 elif intent.status == 'succeeded':
                     # Payment succeeded, create the order
-                    order = Order(user=request.user, 
-                                  total_amount=total_amount, 
-                                  payment_method=payment_method,
-                                  shipping_address=shipping_address,
-                                  billing_address=billing_address,
-                                  shipping_cost=shipping_cost,
-                                  estimated_delivery_date=estimated_delivery_date,
-                                  )
+                    order = Order(
+                        user=request.user, 
+                        total_amount=total_amount + shipping_cost, 
+                        payment_method=payment_method,
+                        shipping_address=shipping_address,
+                        billing_address=billing_address or shipping_address,
+                        shipping_cost=shipping_cost,
+                        estimated_delivery_date=estimated_delivery_date,
+                        payment_status='paid',
+                        payment_verified_at=timezone.now(),
+                        status='paid'
+                    )
                     order.save()
+                    
+                    # Create order items
                     for item in cart_items:
                         order_item = OrderItem(
                             order=order,
                             product=item.product,
                             quantity=item.quantity,
                             size=item.size,
+                            color=getattr(item, 'color', ''),
                         )
                         order_item.save()
+                    
+                    # Clear cart
                     cart_items.delete()
+                    
+                    # Send confirmation email
+                    send_payment_confirmation_email(order)
+                    
                     context = {
                         'order': order,
                         'order_items': order.orderitem_set.all(),
-                        'total_amount': total_amount,
+                        'total_amount': total_amount + shipping_cost,
                     }
                     return render(request, 'confirm_order.html', context)
                 else:
                     return JsonResponse({'error': 'Invalid PaymentIntent status'})
-
+                    
             except stripe.error.CardError as e:
                 return JsonResponse({'error': str(e.user_message)})
+                
         else:
             # Handle cash or QR code payment
-            order = Order(user=request.user, 
-                          total_amount=total_amount, 
-                          payment_method=payment_method,
-                          shipping_address=shipping_address,
-                          billing_address=billing_address,
-                          shipping_cost=shipping_cost,
-                          estimated_delivery_date=estimated_delivery_date,
-                          )
+            payment_status = 'pending' if payment_method == 'qr_code' else 'paid'
+            order_status = 'pending' if payment_method == 'qr_code' else 'paid'
+            
+            order = Order(
+                user=request.user, 
+                total_amount=total_amount + shipping_cost, 
+                payment_method=payment_method,
+                selected_bank=selected_bank if payment_method == 'qr_code' else None,
+                payment_screenshot=payment_screenshot if payment_screenshot else None,
+                shipping_address=shipping_address,
+                billing_address=billing_address or shipping_address,
+                shipping_cost=shipping_cost,
+                estimated_delivery_date=estimated_delivery_date,
+                payment_status=payment_status,
+                status=order_status,
+                payment_verified_at=timezone.now() if payment_method == 'cash' else None,
+            )
             order.save()
+            
+            # Create order items
             for item in cart_items:
                 order_item = OrderItem(
                     order=order,
                     product=item.product,
                     quantity=item.quantity,
                     size=item.size,
+                    color=getattr(item, 'color', ''),
                 )
                 order_item.save()
+            
+            # Clear cart
             cart_items.delete()
+            
+            # Send notifications based on payment method
+            if payment_method == 'qr_code':
+                # Send notification to admin for manual verification
+                send_payment_notification(order)
+                messages.success(
+                    request, 
+                    'Order placed successfully! Your payment is being verified. You will receive confirmation once verified.'
+                )
+            else:
+                # Cash payment - send confirmation
+                send_payment_confirmation_email(order)
+                messages.success(request, 'Order placed successfully!')
+            
             context = {
                 'order': order,
                 'order_items': order.orderitem_set.all(),
-                'total_amount': total_amount,
+                'total_amount': total_amount + shipping_cost,
+                'payment_pending': payment_method == 'qr_code',
             }
             return render(request, 'confirm_order.html', context)
     return redirect('checkout')
@@ -505,3 +579,353 @@ def get_recommendations(user):
     collaborative = collaborative_filtering_recommendations(user, products)
     return (content_based | collaborative).distinct()
 
+
+# ================ PAYMENT NOTIFICATION FUNCTIONS ================
+def send_payment_confirmation_email(order):
+    """Send payment confirmation email to customer"""
+    try:
+        from django.core.mail import send_mail
+        from django.conf import settings
+        
+        subject = f'✅ Payment Confirmed - Order #{order.order_id}'
+        
+        payment_method_display = {
+            'cash': 'Cash on Delivery',
+            'qr_code': 'Mobile Banking (QR Code)',
+            'card': 'Credit/Debit Card'
+        }.get(order.payment_method, order.payment_method)
+        
+        message = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                    PAYMENT CONFIRMATION                      ║
+╚══════════════════════════════════════════════════════════════╝
+
+Dear {order.user.get_full_name()},
+
+🎉 Great news! Your payment has been confirmed and your order is being processed.
+
+📋 ORDER DETAILS:
+   • Order ID: #{order.order_id}
+   • Total Amount: ${order.total_amount}
+   • Payment Method: {payment_method_display}
+   • Order Date: {order.order_date.strftime('%B %d, %Y at %H:%M')}
+   • Payment Status: ✅ CONFIRMED
+
+🚚 SHIPPING INFORMATION:
+   • Shipping Address: {order.shipping_address}
+   • Estimated Delivery: {order.estimated_delivery_date.strftime('%B %d, %Y') if order.estimated_delivery_date else 'TBD'}
+   • Shipping Cost: ${order.shipping_cost}
+
+📦 YOUR ITEMS:
+{chr(10).join([f'   • {item.product.name} (Size: {item.size}, Qty: {item.quantity}) - ${item.product.price}' for item in order.orderitem_set.all()])}
+
+📞 NEED HELP?
+   If you have any questions about your order, please contact our customer service team.
+
+Thank you for choosing @ARTISAN! We appreciate your business.
+
+═══════════════════════════════════════════════════════════════
+This is an automated confirmation email. Please do not reply.
+═══════════════════════════════════════════════════════════════
+        """
+        
+        # Send email to customer
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@example.com',
+            [order.user.email],
+            fail_silently=False,
+        )
+        
+        print(f"✅ Payment confirmation email sent to {order.user.email} for Order #{order.order_id}")
+        
+    except Exception as e:
+        print(f"❌ Error sending payment confirmation email for Order #{order.order_id}: {e}")
+        # Log to file or monitoring service in production
+        logger = logging.getLogger(__name__)
+        logger.error(f"Payment confirmation email failed for Order #{order.order_id}: {e}")
+
+def send_payment_notification(order):
+    """Send payment notification to admin when QR code payment is made"""
+    try:
+        from django.core.mail import send_mail
+        from django.conf import settings
+        
+        subject = f'🔔 New Payment Verification Required - Order #{order.order_id}'
+        bank_name = dict(order.BANK_CHOICES).get(order.selected_bank, 'Unknown Bank')
+        
+        # Create formatted message
+        message = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                   PAYMENT VERIFICATION REQUIRED             ║
+╚══════════════════════════════════════════════════════════════╝
+
+📋 ORDER DETAILS:
+   • Order ID: #{order.order_id}
+   • Customer: {order.user.get_full_name()} ({order.user.username})
+   • Email: {order.user.email}
+   • Total Amount: ${order.total_amount}
+   • Payment Method: QR Code Payment
+   • Bank: {bank_name}
+   • Order Date: {order.order_date.strftime('%Y-%m-%d at %H:%M:%S')}
+
+🏠 SHIPPING DETAILS:
+   • Shipping Address: {order.shipping_address}
+   • Billing Address: {order.billing_address}
+   • Shipping Cost: ${order.shipping_cost}
+   • Estimated Delivery: {order.estimated_delivery_date}
+
+📱 CUSTOMER CONTACT:
+   • Phone: {getattr(order.user.userprofile, 'phone', 'Not provided') if hasattr(order.user, 'userprofile') else 'Not provided'}
+
+📸 PAYMENT SCREENSHOT:
+   • Screenshot uploaded: {'Yes' if order.payment_screenshot else 'No'}
+   {f'   • File: {order.payment_screenshot.name}' if order.payment_screenshot else ''}
+
+⚡ ACTION REQUIRED:
+   1. Verify the payment screenshot in the admin panel
+   2. Confirm the payment amount matches: ${order.total_amount}
+   3. Update the order status to 'paid' once verified
+   4. Customer will be automatically notified of confirmation
+
+🔗 Admin Panel: {getattr(settings, 'SITE_URL', 'http://localhost:8000')}/admin/clothes/order/{order.order_id}/change/
+
+═══════════════════════════════════════════════════════════════
+This is an automated notification from your e-commerce system.
+Please do not reply to this email.
+═══════════════════════════════════════════════════════════════
+        """
+        
+        # Send email to admin
+        admin_emails = []
+        if hasattr(settings, 'ADMIN_EMAIL'):
+            admin_emails.append(settings.ADMIN_EMAIL)
+        if hasattr(settings, 'ADMINS') and settings.ADMINS:
+            admin_emails.extend([admin[1] for admin in settings.ADMINS])
+        
+        # Fallback admin email
+        if not admin_emails:
+            admin_emails = ['admin@example.com']  # Replace with your actual admin email
+        
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@example.com',
+            admin_emails,
+            fail_silently=False,
+        )
+        
+        # Log notification for debugging
+        print(f"✅ Payment notification sent for Order #{order.order_id}")
+        
+        # Optional: Send SMS notification (if SMS service is configured)
+        if hasattr(settings, 'SMS_ENABLED') and settings.SMS_ENABLED:
+            send_sms_notification(order)
+            
+    except Exception as e:
+        print(f"❌ Error sending payment notification for Order #{order.order_id}: {e}")
+        # Log to file or monitoring service in production
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Payment notification failed for Order #{order.order_id}: {e}")
+
+def send_sms_notification(order):
+    """Send SMS notification for urgent payments (optional)"""
+    try:
+        # This is a placeholder for SMS integration
+        # You can integrate with services like Twilio, AWS SNS, etc.
+        bank_name = dict(order.BANK_CHOICES).get(order.selected_bank, 'Unknown Bank')
+        
+        message = f"🔔 New QR payment verification needed!\nOrder #{order.order_id}\nAmount: ${order.total_amount}\nBank: {bank_name}\nCheck admin panel now."
+        
+        # Example Twilio integration (commented out):
+        # from twilio.rest import Client
+        # client = Client(settings.TWILIO_SID, settings.TWILIO_TOKEN)
+        # client.messages.create(
+        #     body=message,
+        #     from_=settings.TWILIO_PHONE,
+        #     to=settings.ADMIN_PHONE
+        # )
+        
+        print(f"📱 SMS notification would be sent: {message}")
+        
+    except Exception as e:
+        print(f"❌ SMS notification error: {e}")
+
+def send_slack_notification(order):
+    """Send Slack notification for team awareness (optional)"""
+    try:
+        # This is a placeholder for Slack integration
+        # You can use slack_sdk or webhook integration
+        
+        bank_name = dict(order.BANK_CHOICES).get(order.selected_bank, 'Unknown Bank')
+        
+        slack_message = {
+            "text": f"🔔 New Payment Verification Required",
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"*New QR Code Payment Received*\n\n*Order:* #{order.order_id}\n*Customer:* {order.user.get_full_name()}\n*Amount:* ${order.total_amount}\n*Bank:* {bank_name}\n\n:warning: *Action needed in admin panel*"
+                    }
+                }
+            ]
+        }
+        
+        # Example webhook implementation (commented out):
+        # import requests
+        # webhook_url = settings.SLACK_WEBHOOK_URL
+        # requests.post(webhook_url, json=slack_message)
+        
+        print(f"💬 Slack notification would be sent for Order #{order.order_id}")
+        
+    except Exception as e:
+        print(f"❌ Slack notification error: {e}")
+
+
+@login_required
+@require_POST
+def check_payment_status(request):
+    """AJAX endpoint to check payment status"""
+    order_id = request.POST.get('order_id')
+    
+    try:
+        order = Order.objects.get(order_id=order_id, user=request.user)
+        
+        # In a real implementation, you would check with the bank's API
+        # For now, we'll simulate the status check
+        
+        return JsonResponse({
+            'status': order.payment_status,
+            'payment_verified_at': order.payment_verified_at.isoformat() if order.payment_verified_at else None,
+            'order_status': order.status,
+        })
+        
+    except Order.DoesNotExist:
+        return JsonResponse({'error': 'Order not found'}, status=404)
+
+
+@login_required
+def verify_payment(request, order_id):
+    """Admin view to manually verify QR code payments"""
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    try:
+        order = Order.objects.get(order_id=order_id)
+        
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            
+            if action == 'verify':
+                order.payment_status = 'paid'
+                order.payment_verified_at = timezone.now()
+                order.status = 'paid'
+                order.save()
+                
+                # Send confirmation email to customer
+                send_payment_confirmation_email(order)
+                
+                return JsonResponse({'success': True, 'message': 'Payment verified successfully'})
+                
+            elif action == 'reject':
+                order.payment_status = 'failed'
+                order.save()
+                
+                return JsonResponse({'success': True, 'message': 'Payment rejected'})
+        
+        context = {
+            'order': order,
+            'order_items': order.orderitem_set.all(),
+        }
+        return render(request, 'admin/verify_payment.html', context)
+        
+    except Order.DoesNotExist:
+        return JsonResponse({'error': 'Order not found'}, status=404)
+
+
+def send_payment_confirmation_email(order):
+    """Send payment confirmation email to customer"""
+    try:
+        subject = f'Payment Confirmed - Order #{order.order_id}'
+        
+        message = f"""
+        Dear {order.user.get_full_name()},
+        
+        Your payment for Order #{order.order_id} has been confirmed!
+        
+        Order Details:
+        - Total Amount: ${order.total_amount}
+        - Payment Method: {order.get_payment_method_display()}
+        - Bank: {dict(order.BANK_CHOICES).get(order.selected_bank, '')}
+        - Estimated Delivery: {order.estimated_delivery_date}
+        
+        Your order is now being processed and will be shipped soon.
+        
+        Thank you for your purchase!
+        
+        Best regards,
+        CSR Team
+        """
+        
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [order.user.email],
+            fail_silently=True,
+        )
+        
+    except Exception as e:
+        print(f"Error sending confirmation email: {e}")
+
+
+# ================ WEBHOOK FOR BANK NOTIFICATIONS ================
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def bank_payment_webhook(request):
+    """Webhook endpoint for receiving payment notifications from banks"""
+    if request.method == 'POST':
+        try:
+            # Parse the webhook data (format depends on bank's API)
+            data = json.loads(request.body)
+            
+            # Verify webhook signature (implement according to bank's documentation)
+            # if not verify_webhook_signature(request, data):
+            #     return JsonResponse({'error': 'Invalid signature'}, status=400)
+            
+            # Extract payment information
+            transaction_id = data.get('transaction_id')
+            amount = data.get('amount')
+            reference = data.get('reference')  # This could be your order ID
+            status = data.get('status')
+            
+            # Find the order
+            try:
+                order_id = reference.replace('ORDER-', '')  # Assuming reference format
+                order = Order.objects.get(order_id=order_id)
+                
+                if status == 'success' and float(amount) == float(order.total_amount):
+                    order.payment_status = 'paid'
+                    order.payment_verified_at = timezone.now()
+                    order.status = 'paid'
+                    order.save()
+                    
+                    # Send confirmation to customer
+                    send_payment_confirmation_email(order)
+                    
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({'error': 'Payment verification failed'}, status=400)
+                    
+            except Order.DoesNotExist:
+                return JsonResponse({'error': 'Order not found'}, status=404)
+                
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Method not allowed'}, status=405)

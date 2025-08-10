@@ -48,9 +48,70 @@ h2 {
     font-size: 1.5em;
     text-align: center;
     margin-bottom: 10px;
-    text-transform: uppercase;
-    border-bottom: 2px dashed #333;
-    padding-bottom: 10px;
+}
+
+/* Payment Status Alerts */
+.payment-status-alert {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    border-left: 4px solid;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-status-alert.pending {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+    color: #856404;
+}
+
+.payment-status-alert.confirmed {
+    background-color: #d1ecf1;
+    border-left-color: #17a2b8;
+    color: #0c5460;
+}
+
+.alert-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    line-height: 1;
+}
+
+.alert-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.alert-content p {
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Make alerts responsive */
+@media (max-width: 600px) {
+    .payment-status-alert {
+        padding: 12px 16px;
+        margin: 15px 0;
+    }
+    
+    .alert-icon {
+        font-size: 20px;
+        margin-right: 12px;
+    }
+    
+    .alert-content h4 {
+        font-size: 14px;
+    }
+    
+    .alert-content p {
+        font-size: 13px;
+    }
 }
 
 h3 {

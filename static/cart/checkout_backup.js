@@ -50,18 +50,19 @@ document.addEventListener('DOMContentLoaded', function() {
         'canadia': '/static/cart/CANADIA.png'
     };
 
-    // Bank names mapping
     const bankNames = {
         'aba': 'ABA Bank',
         'aceleda': 'ACELEDA Bank',
         'canadia': 'CANADIA Bank'
     };
 
-    // Payment method handling
+    // Payment method switching
     const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
     const paymentDetails = document.querySelectorAll('.payment-details');
 
     function showPaymentDetails(selectedMethod) {
+        console.log('showPaymentDetails called with:', selectedMethod);
+        
         // Hide all payment details
         paymentDetails.forEach(detail => {
             detail.classList.remove('active');
@@ -69,10 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show selected payment method details
         const targetDetail = document.getElementById(`${selectedMethod}-details`);
+        console.log('Target detail element:', targetDetail);
         
         if (targetDetail) {
             setTimeout(() => {
                 targetDetail.classList.add('active');
+                console.log('Activated payment details for:', selectedMethod);
             }, 150);
         }
     }
@@ -85,6 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
         method.addEventListener('change', function() {
             if (this.checked) {
                 showPaymentDetails(this.value.replace('_', '-'));
+                
+                // Update form validation requirements
                 updateFormValidation(this.value);
             }
         });
@@ -142,46 +147,55 @@ document.addEventListener('DOMContentLoaded', function() {
             shippingAddress.required = true;
         }
 
-        // QR code specific requirements
+        // Reset all conditional requirements
+        if (bankSelect) bankSelect.required = false;
+        if (paymentScreenshot) paymentScreenshot.required = false;
+
+        // Set requirements based on payment method
         if (paymentMethod === 'qr_code') {
-            if (bankSelect) {
-                bankSelect.required = false; // Handled separately
-            }
-            if (paymentScreenshot) {
-                paymentScreenshot.required = false; // Will be set when bank is selected
-            }
-        } else {
-            // For cash and card, remove QR-specific requirements
-            if (bankSelect) {
-                bankSelect.required = false;
-            }
-            if (paymentScreenshot) {
-                paymentScreenshot.required = false;
-            }
+            if (bankSelect) bankSelect.required = true;
+            // Screenshot will be required after bank selection
+            console.log('Set QR code requirements');
         }
+        
+        console.log('Form validation updated for:', paymentMethod);
     }
 
-    // Form submission handling
+    // Enhanced form submission
     const form = document.getElementById('payment-form');
     const submitButton = document.getElementById('submit-button');
+    const buttonText = submitButton.querySelector('.button-text');
+    const buttonSpinner = submitButton.querySelector('.button-spinner');
 
     if (form && submitButton) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
             
-            const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value;
+            console.log('Form submission started...');
             
-            if (selectedPaymentMethod === 'card') {
-                if (stripe && cardElement) {
-                    handleStripePayment();
+            // Disable submit button and show loading
+            submitButton.disabled = true;
+            submitButton.classList.add('loading');
+            
+            const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            console.log('Selected payment method:', selectedPaymentMethod);
+            
+            try {
+                if (selectedPaymentMethod === 'card' && stripe && cardElement) {
+                    console.log('Processing card payment...');
+                    await handleStripePayment();
                 } else {
-                    showError('Card payment is not available. Please choose another payment method.');
-                    resetSubmitButton();
+                    console.log('Processing non-card payment...');
+                    await handleNonCardPayment();
                 }
-            } else {
-                handleNonCardPayment();
+            } catch (error) {
+                console.error('Payment submission error:', error);
+                showError('An error occurred while processing your payment. Please try again.');
+                resetSubmitButton();
             }
         });
+    } else {
+        console.error('Form or submit button not found!');
     }
 
     async function handleStripePayment() {
@@ -235,39 +249,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function handleNonCardPayment() {
-        // Show loading state
-        submitButton.disabled = true;
-        submitButton.classList.add('loading');
+    async function handleNonCardPayment() {
+        console.log('handleNonCardPayment started...');
         
-        const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value;
+        // Validate QR code requirements
+        const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        console.log('Payment method in handleNonCardPayment:', selectedPaymentMethod);
         
-        // Validation for QR code payment
         if (selectedPaymentMethod === 'qr_code') {
             const bankSelect = document.getElementById('bank-select');
             const paymentScreenshot = document.getElementById('payment_screenshot');
             
-            if (!bankSelect || !bankSelect.value) {
+            console.log('Bank selected:', bankSelect ? bankSelect.value : 'no bank select');
+            console.log('Screenshot files:', paymentScreenshot ? paymentScreenshot.files.length : 'no screenshot input');
+            
+            if (!bankSelect.value) {
                 showError('Please select a bank for QR code payment.');
                 resetSubmitButton();
                 return;
             }
             
-            if (!paymentScreenshot || !paymentScreenshot.files.length) {
-                showError('Please upload your payment screenshot.');
+            if (!paymentScreenshot.files.length) {
+                showError('Please upload a screenshot of your payment confirmation.');
+                resetSubmitButton();
+                return;
+            }
+            
+            // Validate file type
+            const file = paymentScreenshot.files[0];
+            if (!file.type.startsWith('image/')) {
+                showError('Please upload a valid image file.');
+                resetSubmitButton();
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showError('Image file size must be less than 5MB.');
                 resetSubmitButton();
                 return;
             }
         }
         
-        // Common validation
+        // Check if shipping address is filled
         const shippingAddress = document.getElementById('shipping_address');
+        console.log('Shipping address value:', shippingAddress ? shippingAddress.value : 'no shipping address input');
         
         if (!shippingAddress || !shippingAddress.value.trim()) {
             showError('Please enter your shipping address.');
             resetSubmitButton();
             return;
         }
+        
+        console.log('All validations passed, submitting form...');
         
         // Submit form normally for cash and QR code payments
         form.submit();
@@ -383,4 +417,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    console.log("Enhanced checkout JavaScript initialized successfully!");
 });

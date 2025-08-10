@@ -31,6 +31,26 @@
         <div class="confirmation-message">
             <h2>Order Confirmation</h2>
             <h3>Thank you for your purchase!</h3>
+            
+            <!-- Payment Status Alert -->
+            {% if payment_pending %}
+                <div class="payment-status-alert pending">
+                    <div class="alert-icon"></div>
+                    <div class="alert-content">
+                        <h4>Payment Verification in Progress</h4>
+                        <p>Your QR code payment is being verified by our team. You will receive an email confirmation once the payment is approved. This usually takes 1-2 hours during business hours.</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="payment-status-alert confirmed">
+                    <div class="alert-icon"></div>
+                    <div class="alert-content">
+                        <h4>Payment Confirmed</h4>
+                        <p>Your payment has been successfully processed and your order is confirmed!</p>
+                    </div>
+                </div>
+            {% endif %}
+            
             <p>Your order has been successfully placed. Here are the details:</p>
         </div>
         <!-- Order Items Table -->
